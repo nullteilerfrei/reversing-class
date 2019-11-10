@@ -244,6 +244,10 @@
         <STATE NAME="KeyCode" TYPE="int" VALUE="72" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="DataTypes Provider (Tool)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="120" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="65" />
+    </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Symbol Table (Tool)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="114" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="65" />
