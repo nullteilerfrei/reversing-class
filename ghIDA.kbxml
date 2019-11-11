@@ -44,6 +44,10 @@
         <STATE NAME="KeyCode" TYPE="int" VALUE="70" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Editor: Unpackage Component (DataTypeManagerPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="61" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+    </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Paste (ClipboardPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="86" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
@@ -75,6 +79,10 @@
     <WRAPPED_OPTION NAME="Code Viewer Clone (Listing)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="84" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="195" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Editor: Move Components Down (DataTypeManagerPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="40" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="520" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Convert To Unsigned Hex (EquatePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="72" />
@@ -164,8 +172,16 @@
         <STATE NAME="KeyCode" TYPE="int" VALUE="127" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Editor: Clear Components (DataTypeManagerPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="67" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+    </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Rename Data Field (DataPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="78" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Editor: Create Array (DataTypeManagerPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="91" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Define pointer (Tool)" CLASS="ghidra.framework.options.WrappedKeyStroke">
@@ -205,8 +221,8 @@
         <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Close Window (Tool)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="27" />
-        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+        <STATE NAME="KeyCode" TYPE="int" VALUE="87" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Expand All (DataTypeManagerPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="40" />
@@ -328,6 +344,10 @@
         <STATE NAME="KeyCode" TYPE="int" VALUE="70" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Editor: Insert Undefined Byte (DataTypeManagerPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="85" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="520" />
+    </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Rename Function (DecompilePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="78" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
@@ -399,6 +419,10 @@
     <WRAPPED_OPTION NAME="Function Definition (DataTypeManagerPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="80" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Editor: Duplicate Multiple of Component (DataTypeManagerPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="77" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="520" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Convert To Signed Hex (EquatePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="67" />
@@ -556,6 +580,14 @@
         <STATE NAME="KeyCode" TYPE="int" VALUE="66" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="520" />
     </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Editor: Duplicate Component (DataTypeManagerPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="68" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="520" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Editor: Delete Components (DataTypeManagerPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="127" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+    </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Go to next function (CodeBrowserPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="40" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
@@ -588,6 +620,10 @@
         <STATE NAME="KeyCode" TYPE="int" VALUE="76" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="650" />
     </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Editor: Create Pointer (DataTypeManagerPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="80" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+    </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Auto Analyze (AutoAnalysisPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="65" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="520" />
@@ -616,6 +652,10 @@
         <STATE NAME="KeyCode" TYPE="int" VALUE="86" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
     </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Editor: Move Components Up (DataTypeManagerPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="38" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="520" />
+    </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Rename Function (FunctionPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="78" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
@@ -638,6 +678,10 @@
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Previous Selected Range (NextPrevSelectedRangePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="161" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Editor: Apply Editor Changes (DataTypeManagerPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="83" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Search Text (SearchTextPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
@@ -694,6 +738,10 @@
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Edit Label (LabelMgrPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="76" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Editor: Edit Component Field (DataTypeManagerPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="113" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Find Data Types (DataTypeManagerPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
