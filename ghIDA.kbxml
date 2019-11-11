@@ -556,10 +556,6 @@
         <STATE NAME="KeyCode" TYPE="int" VALUE="75" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="520" />
     </WRAPPED_OPTION>
-    <WRAPPED_OPTION NAME="Print (PrintingPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="80" />
-        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
-    </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Go To Previous Program (MultiTabPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="119" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
