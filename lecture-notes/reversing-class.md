@@ -92,7 +92,7 @@ Some malware is produced by so-called _Builders_. While these are not precisely 
 
 - Use malware repositories:
   - Get a job in the industry to get access to [VirusTotal].
-  - If that is not an option, use [MalShare].
+  - If that is not an option, use [MalShare] or [URLhaus]
 - Sometimes, friendly cyber criminals just send you malware. Keep an eye on your inbox.
 - If you are very important, you might even get targeted malware. Lucky you!
 
@@ -264,6 +264,7 @@ Cryptography:
 [Hopper]: https://www.hopperapp.com/
 [RetDec]: https://github.com/avast/retdec
 [MalShare]: https://malshare.com/
+[URLhaus]: https://urlhaus-api.abuse.ch/downloads/
 [VirusTotal]: https://www.virustotal.com/
 [MSDN Library]: https://docs.microsoft.com/en-us/windows/win32/api/
 [NTF-MSDN]: https://blag.nullteilerfrei.de/2019/07/29/ghidra-msdn-offline-library-love/
