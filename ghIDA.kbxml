@@ -204,10 +204,6 @@
         <STATE NAME="KeyCode" TYPE="int" VALUE="80" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
-    <WRAPPED_OPTION NAME="Show Label History (LabelMgrPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="72" />
-        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
-    </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Convert To Unsigned Binary (EquatePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="67" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
@@ -259,10 +255,6 @@
     <WRAPPED_OPTION NAME="Repeat Text Search (SearchTextPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="114" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="195" />
-    </WRAPPED_OPTION>
-    <WRAPPED_OPTION NAME="Show All History (LabelMgrPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="72" />
-        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="DataTypes Provider (Tool)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="120" />
