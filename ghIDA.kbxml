@@ -36,6 +36,10 @@
         <STATE NAME="KeyCode" TYPE="int" VALUE="65" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
     </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Highlight Defined Use (DecompilePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="32" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+    </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Cycle: byte,word,dword,qword (Tool)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="68" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
@@ -204,6 +208,10 @@
         <STATE NAME="KeyCode" TYPE="int" VALUE="80" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Show Label History (LabelMgrPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="72" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="715" />
+    </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Convert To Unsigned Binary (EquatePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="67" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
@@ -259,6 +267,10 @@
     <WRAPPED_OPTION NAME="DataTypes Provider (Tool)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="120" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="65" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Show All History (LabelMgrPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="72" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="715" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Symbol Table (Tool)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="114" />
@@ -547,6 +559,10 @@
     <WRAPPED_OPTION NAME="Set Stack Depth Change (FunctionPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="75" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="520" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Print (PrintingPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="80" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="715" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Go To Previous Program (MultiTabPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="119" />
