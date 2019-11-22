@@ -98,8 +98,8 @@ Some malware is produced by so-called _Builders_. While these are not precisely 
 
 # A Few Hints
 
-- When importing a file, click `Options` and check `Load External Libraries` (potentially edit the import paths) to make Ghidra follow Win32 API imports into the corresponding dynamic link libraries (DLLs). This is a good thing. If you have a Windows OS, you can use the DLLs from that machine. Alternatively, we provide DLLs from a copy of ReactOS, which is a free and open source Windows clone.
 - You should import [our keybindings](../ghIDA.kbxml). These [keybindings](../ghIDA.kbxml) strive to be as close as possible to the [IDA] keybindings because we are used to them. Also, they are good. Look, if you use different keybindings, this will only be confusing during the course! Just import [the damn keybindings](../ghIDA.kbxml)!
+- Variables are a concept not present in machine code. Ghidra tries to map memory regions to variables in the decompiled code and may change this mapping after each of your operations. If these changes get in your way (and they will), we recommend forcing Ghidra to fix the current mapping by selecting the entry **Commit Locals** from the decompiler context menu.
 
 # Our First Sample - The Basics
 
@@ -169,9 +169,8 @@ Your job is to figure out all the evil things it does. As you can arguably spend
   - YARA: binary patterns
 - Describe malware features
 - Identification (at least partly, if possible)
-  - Subroutines may be taken from publicly available repositories.
-  - The whole malware may be open source.
-  - Malware family / strain (also possible for closed source malware)
+  - Using signatures or code overlaps with known software, cluster malware into families
+  - Construct a timeline for malware activity, identify versions or campaigns
 - Understand programming styles: Experience, habits and skill level of the author
   - Libraries
   - Programming patterns
@@ -200,7 +199,31 @@ We have already mentioned briefly that malware reverse engineering involves a lo
 
 It goes without saying (but we'll say it anyway) that in neither of these cases, either option is strictly better or worse. It depends on context, and also on personal preference.
 
-# String Obfüscation
+# Different Kinds of Code
+
+## Portable Executables
+
+We have seen the code of two Windows executables already, but it is worth noting that these files do not consist exclusively of machine code. They are files in the _Portable Executable_ (PE) format. These files always begin with the sequence `MZ`, followed by a chunk of meta information which is called the _PE Header_. The so-called _PE Loader_ is a component of the Windows OS which reads this information and turns the executable on disk into a _process_ in memory. Among several other things, the header contains information about:
+
+- the memory layout of this process,
+- the Windows API routines that are referenced by the code,
+- the address of the _entry point_, which points to the code where the process begins executing.
+
+A PE file has several _sections_, one of which contains the executable code. This section is normally called `.text` and contains the entry point. There are other frequent fliers such as `.data`, `.rdata`, `.rsrc`, and `.reloc`. We will not go into detail about what they are used for; they are placed in memory by the PE loader and Ghidra will emulate this mapping.
+
+The header also contains information about the _Dynamic Link Libraries_ (DLLs) required by the executable. These DLL files are also PE files, and the PE loader loads them into the same memory space. Ghidra can emulate this as well: When importing a file, click **Options** and check **Load External Libraries** (potentially edit the import paths) to make Ghidra follow Win32 API imports into the corresponding DLLs. If you have a Windows OS, you can use the DLLs from that machine. Alternatively, we provide DLLs from a copy of [ReactOS], which is a free and open source Windows clone.
+
+These DLLs need to be loaded so that the process can call the Windows API functions we have seen before: The code for each of these functions resides in a system DLL.
+
+## Shellcode
+
+It is possible to write code that does not depend on its position in memory. This is the kind of code that usually gets executed by exploits and for this historic reason, it is called _shellcode_. Some nitpicking pipe smokers will insist that it should be called _position-independent code_, but we'll call it shellcode.
+
+Sometimes, certain stages of a malware chain are implemented as shellcode. The main reason for this is to easily execute these stages in memory without touching the disk: The buffer containing the shellcode can be called just like a function. Note that memory in Windows can have read/write/execute permissions, and there are not many other reasons to make a memory region executable. This can happen in a call to `VirtualAlloc` or `VirtualProtect`, for example.
+
+# Obstacles
+
+## String Obfuscation
 
 As we saw in the second sample, plaintext strings in malware can give away a lot of information. Some malware authors care about making our job hard and therefore want to avoid this. A very common technique to conceal strings is to _obfuscate_ them, usually by means of encoding them. Sometimes, this involves the use of cryptographic algorithms with hard-coded keys. Hexadecimal and base64 encoding as well as XOR-based encryption algorithms are so easy to spot that you should keep an eye out for them.
 
@@ -238,6 +261,93 @@ As an exercise in string obfuscation, we recommend extracting the C2 servers fro
 ```
 by using a bottom-up approach starting at calls to `InternetConnectA`.
 
+## Stack Strings
+
+Independent of the above, strings can be obfuscated by simply not storing them as a consecutive buffer of bytes. Instead, the string is constructed by a sequence of machine code instructions. The first known implementation of this technique was to assemble strings on the _stack_, which is a datastructure present on many architectures. For this reason, this method is referred to as _stack strings_. They can often be spotted in Ghidra as many consecutive single byte value assignments:
+```
+  local_78 = 0x56;
+  local_77 = 0x69;
+  local_76 = 0x72;
+  local_75 = 0x74;
+  local_74 = 0x75;
+  local_73 = 0x61;
+  local_72 = 0x6c;
+  local_71 = 0x41;
+  local_70 = 0x6c;
+  local_6f = 0x6c;
+  local_6e = 0x6f;
+  local_6d = 0x63;
+  local_6c = 0;
+```
+To turn these byte values into readable letters, switch to the **Listing** window (the disassembly), which will look like this:
+```
+  0000000c       MOV           byte ptr [EBP + local_78], 0x56
+  00000010       MOV           byte ptr [EBP + local_77], 0x69
+  00000014       MOV           byte ptr [EBP + local_76], 0x72
+  00000018       MOV           byte ptr [EBP + local_75], 0x74
+  0000001c       MOV           byte ptr [EBP + local_74], 0x75
+  00000020       MOV           byte ptr [EBP + local_73], 0x61
+  00000024       MOV           byte ptr [EBP + local_72], 0x6c
+  00000028       MOV           byte ptr [EBP + local_71], 0x41
+  0000002c       MOV           byte ptr [EBP + local_70], 0x6c
+  00000030       MOV           byte ptr [EBP + local_6f], 0x6c
+  00000034       MOV           byte ptr [EBP + local_6e], 0x6f
+  00000038       MOV           byte ptr [EBP + local_6d], 0x63
+  0000003c       MOV           byte ptr [EBP + local_6c], 0x0
+```
+Then, place your cursor over the first byte value `0x56` and use the option **Convert → Char** from the context menu. Remember the shortcut (which should really be `R` if you imported [our delicious keybindings](../ghIDA.kbxml)). Now, repeatedly press the down arrow key followed by that shortcut. That's your life now.
+
+## Packing
+
+Samples can be _packed_, which means that they have been compressed, encoded, encrypted, or arbitrary combinations of these. Packed samples require additional code to execute. Hence, these files are usually loaders or droppers. Since we have reserved these terms for malware, it is worth pointing out that there are also packers like UPX whose intended purpose is to reduce the size of an executable and which are used just as well by legitimate software authors.
+
+The program used to pack a sample is referred to as a _packer_. Some people use the term exclusively for tools that use compression as the only means of obfuscation, and use the terms _crypter_ or _protector_ for other variants. We don't.
+
+Packing is a very convenient method of obfuscation: It allows the malware author to use their comfort zone toolchain in development and obfuscate the sample by simply applying a packer to it. Packed samples can be notoriously hard to reverse engineer when the packer stub has been made subject to additional obfuscations that we will discuss below. However, the weakness of packing as an obfuscation technique is the fact that at some point during execution, the unpacked sample will be in memory or on disk. The universal solution to defeat this technique is therefore dynamic analysis, which is out of scope for this course. 
+
+## Control Flow Obfuscation
+
+We refer to _control flow obfuscation_ as any obfuscation technique that alters the control flow of code with the intention to make it more resilient against static analysis. For example:
+
+- **Junk Code**: Insert additional instructions into the code that don't alter its behavior. 
+- **Function Chunking**: Split a function into parts, shuffle these around, and connect them with jumps.
+- **Opaque Predicates**: Make code branches depend on information that is constant, but not easily identified as such. For example, check whether `GetTickCount` API returns a value greater than `4`. Or check whether `(5 + 7)` equals `(3 * 2 << 1)`.
+- **Return-Based Calls**: Use the `RET` assembly command to call a function. Ignore this if you don't know assembly, or read up.
+- **Exception Handler Hijacking**: Hijack those exception handlers! And throw some exceptions.
+
+Only the first of these techniques is present in the packed sample with the following SHA-256 hash:
+```
+ad320839e01df160c5feb0e89131521719a65ab11c952f33e03d802ecee3f51f
+```
+It is your exercise to extract the shellcode second stage of this loader. 
+
+## Runtime API Lookups
+
+Instead of listing required API functions as an imported symbol, the malware can use the `LoadLibrary` and `GetProcAddress` API calls to load DLLs into memory and retrieve the addresses of required functions at runtime. The malware may even go one step further and implement a variant of `GetProcAddress` which uses hashes instead of function names; this is referred to as _API hashing_. Finally, the malware may even go _another step futher_ and avoid using `LoadLibrary` by parsing the PE header of DLLs which are already present in memory. In practice, the following observation helps to identify when shenanigans like this are taking place. If the variable `ptr` points to the beginning of a DLL, then
+```
+(ptr + *(int *)(ptr + *(int *)(ptr + 0x3c) + 0x78))
+```
+points to its list of exported functions.
+
+It is out of scope for this lecture to cover the Windows PE file format exhaustively, but it is vital for an experienced Windows reverse engineer to be able to Google it properly. If you want to know exactly how the PE header looks like, we recommend the [PE Format Cheat Sheet][PECheat].
+
+## Meta Data Deception
+
+- Deceptively naming symbols
+- Timestomping
+
+## Compiler Optimizations
+
+- Loop unrolling
+- Inlining
+- Constant Folding
+
+## Advanced Obfuscation Techniques
+
+- Control Flow Flattening
+- Virtualization
+- Polymophism
+- Metamophism
 
 # Recognizing Compression and Cryptographic Routines
 
@@ -268,3 +378,5 @@ Cryptography:
 [VirusTotal]: https://www.virustotal.com/
 [MSDN Library]: https://docs.microsoft.com/en-us/windows/win32/api/
 [NTF-MSDN]: https://blag.nullteilerfrei.de/2019/07/29/ghidra-msdn-offline-library-love/
+[ReactOS]: https://reactos.org/
+[PECheat]: http://www.openrce.org/reference_library/files/reference/PE%20Format.pdf
