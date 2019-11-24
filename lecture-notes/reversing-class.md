@@ -350,20 +350,99 @@ It is out of scope for this lecture to cover the Windows PE file format exhausti
 - Polymophism
 - Metamophism
 
-# Recognizing Compression and Cryptographic Routines
+# To Do as Cypher Does
 
-For Both:
-- If you know the algorithm, you might recognize the structure.
-- Lots of arithmetic
-- Characteristic constant values
+> You get used to it. I…I don’t even see the code. All I see is blonde, brunette, red-head. Hey, you uh… want a drink?
 
-Compression:
-- Backreferences into already decompressed data
-- No decryption key
+The most complex algorithms that occur in malware reverse engineering are arguably cryptographic primitives and (de)compression algorithms. Of course, recognizing the algorithm is rather easy when it is based on an API call. The next best thing is a statically linked library, because they often contain copyright strings that clearly identify their purpose. For example, if you see something like this:
+```c++
+if ("- unzip 0.15 Copyright 1998 Gilles Vollant "[1] == ' ') {
+    // ...
+}
+```
+then you are probably looking at unzip code. However, this is not always the case, and identifying the algorithm in question can be a massive road block in your analysis.
 
-Cryptography:
+The first step is to realize that you are looking at a cryptographic or compression algorithm at all. Needless to say, there is no magic receipe, but a few dead giveaways anyway. For example, horrendous amounts of arithmetic operations (especially shifts and XOR) should tip you off. Another clue are oddly specific looking, large numeric constants. The following code has both:
+```c++
+uVar1 = iVar2 + 0xd76aa478 + (~uVar9 & uVar2 | uVar12 & uVar9) + local_50;
+uVar3 = (uVar1 >> 0x19 | uVar1 * 0x80) + uVar9;
+uVar2 = uVar2 + 0xe8c7b756 + (~uVar3 & uVar12 | uVar9 & uVar3) + local_4c;
+uVar5 = (uVar2 >> 0x14 | uVar2 * 0x1000) + uVar3;
+uVar2 = uVar12 + 0x242070db + (~uVar5 & uVar9 | uVar5 & uVar3) + local_48;
+uVar7 = (uVar2 >> 0xf | uVar2 * 0x20000) + uVar5;
+```
+The key goal for you should be to identify the algorithm as quickly as possible. To do this, anything is allowed. Here are a few inside and outside the box ideas:
+
+- If the routine processes data and you are able to identify the file format of that data, it can be possible to deduce the algorithm.
+- If you find characteristic numeric constants, smashing them into Google usually gives you the answer you seek.
+
+It is not always that easy. If you have nothing to hold on to right away, we recommend the following approach. We will outline the details of each of these below.
+
+1. Determine whether the algorithm is compression, encryption, boring framework code, or something else.
+2. If it is something interesting, reverse it just long enough to find another clue to search for on the internet. It can help to have reverse engineered the routine well enough to recognize a pseudocode description of it when you find one.
+3. Once you have identified an algorithm, commit everything you saw to memory forever and be able to identify this algorithm for all eternity.
+
+## Identifying Compression Algorithms
+
+If you are already quite certain from context that the algorithm processes blobs of unintelligible data, i.e. you are convinced that it is decompression or decryption, then the absence of an encryption key is solid evidence that you are dealing, in fact, with a compression algorithm. Note however that an encryption key doesn't always have to be passed as an argument to the function but could also be generated in some other way. 
+
+Another algorithmic indicator for compression algorithms is the presence of pointer arithmetic with negative offsets, i.e. a back reference into already decompressed data. For example, consider the following excerpt from a decompiled APLib decompression routine:
+```c++
+if ((local_8 == 0) && (iVar3 == 2)) {
+  local_18 = local_10;
+  local_14 = FUN_00000900(&local_2c);
+  while (local_14 != 0) {
+    *decompressed = decompressed[-local_18];
+    decompressed = decompressed + 1;
+    local_14 += -1;
+  }
+}
+```
+Note particularly the 5th line where `decompressed[-local_18]` is a backwards reference. 
+
+## Identifying Cryptographic Algorithms
+
 - Several algorithms can be detected with YARA rules.
 - The arguments could be a ciphertext buffer and a decryption key.
+
+The following is a barely annotated Ghidra output for an RC4 implementation:
+```c++ 
+uVar5 = param_1->kez_len;
+temp_5fdb5bd067 = (byte *)param_1->kez;
+uVar6 = 0;
+uVar8 = 0;
+do {
+  local_100[uVar8] = (byte)uVar8;
+  uVar8 += 1;
+} while (uVar8 < 0x100);
+bVar5 = 0;
+uVar8 = 0;
+do {
+  bVar1 = local_100[uVar8];
+  bVar5 += temp_5fdb5bd067[uVar6 & 0xff] + bVar1;
+  local_100[uVar8] = local_100[bVar5];
+  local_100[bVar5] = bVar1;
+  uVar6 = ((uVar6 & 0xff) + 1) % uVar5;
+  uVar8 += 1;
+} while (uVar8 < 0x100);
+uVar3 = 0;
+dVar8 = param_1->length;
+if (dVar8 != 0) {
+  pbVar10 = param_1->ciphertext;
+  iVar9 = param_1->plaintext - (int)pbVar10;
+  uVar7 = uVar3;
+  do {
+    uVar7 = (uint)(byte)((char)uVar7 + 1);
+    bVar2 = local_100[uVar7];
+    uVar3 = (uint)(byte)((char)uVar3 + bVar2);
+    local_100[uVar7] = local_100[uVar3];
+    local_100[uVar3] = bVar2;
+    *pbVar10 = local_100[(byte)(local_100[uVar7] + bVar2)] ^ pbVar10[iVar9];
+    pbVar10 = pbVar10 + 1;
+    dVar8 -= 1;
+  } while (dVar8 != 0);
+}
+```
 
 
 
