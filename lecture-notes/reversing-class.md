@@ -100,6 +100,7 @@ Some malware is produced by so-called _Builders_. While these are not precisely 
 
 - You should import [our keybindings](../ghIDA.kbxml). These [keybindings](../ghIDA.kbxml) strive to be as close as possible to the [IDA] keybindings because we are used to them. Also, they are good. Look, if you use different keybindings, this will only be confusing during the course! Just import [the damn keybindings](../ghIDA.kbxml)!
 - Variables are a concept not present in machine code. Ghidra tries to map memory regions to variables in the decompiled code and may change this mapping after each of your operations. If these changes get in your way (and they will), we recommend forcing Ghidra to fix the current mapping by selecting the entry **Commit Locals** from the decompiler context menu.
+- Select **Edit → Tool Options → Listing Fields → Cursor Text Highlight** and switch it from middle mouse button to left mouse button. This way, when you click on a symbol, it will highlight all other occurrences.
 
 # Our First Sample - The Basics
 
