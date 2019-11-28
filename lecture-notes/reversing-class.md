@@ -371,12 +371,12 @@ uVar5 = (uVar2 >> 0x14 | uVar2 * 0x1000) + uVar3;
 uVar2 = uVar12 + 0x242070db + (~uVar5 & uVar9 | uVar5 & uVar3) + local_48;
 uVar7 = (uVar2 >> 0xf | uVar2 * 0x20000) + uVar5;
 ```
-The key goal for you should be to identify the algorithm as quickly as possible. To do this, anything is allowed. Here are a few inside and outside the box ideas:
+The key goal for you should be to identify the algorithm as quickly as possible. Here are a few inside and outside the box ideas:
 
 - If the routine processes data and you are able to identify the file format of that data, it can be possible to deduce the algorithm.
 - If you find characteristic numeric constants, smashing them into Google usually gives you the answer you seek.
 
-It is not always that easy. If you have nothing to hold on to right away, we recommend the following approach. We will outline the details of each of these below.
+If you have nothing to hold on to right away, we recommend the following approach. We will outline the details of each of these below.
 
 1. Determine whether the algorithm is compression, encryption, boring framework code, or something else.
 2. If it is something interesting, reverse it just long enough to find another clue to search for on the internet. It can help to have reverse engineered the routine well enough to recognize a pseudocode description of it when you find one.
@@ -402,13 +402,18 @@ Note particularly the 5th line where `decompressed[-local_18]` is a backwards re
 
 ## Identifying Cryptographic Algorithms
 
-- Several algorithms can be detected with YARA rules.
-- The arguments could be a ciphertext buffer and a decryption key.
+If you can identify something that looks like an encryption key, you should lean towards identifying the routine as cryptographic. For example, this is the case if two buffers are passed to the function, one with a lot of data, and one with way less. As noted above, keys may also be hard-coded or generated inside what is indeed a decryption routine.
 
-The following is a barely annotated Ghidra output for an RC4 implementation:
+Now if we are operating under the assumption that the code is cryptographic in nature, there's a chance that you are dealing with assymetric ciphers such as RSA or ECC. In that case you'll have to do some learning, because we won't cover it here. More frequent are symmetric _block_ and _stream_ ciphers. We are trying to give a practical guide here, so bear with us - none of what we explain is theoretically complete or even sound. But it will work. We will talk about identification of block ciphers later, there is a very reliable method of identifying them. As far as stream ciphers go, identification is a little bit more tricky. We will give you techniques for the three ciphers we see most often:
+
+| Cipher    | Telltale                                |
+|:----------|:----------------------------------------|
+| RC4       | will be explained below                 |
+| [SALSA20] | the constant string `expand 32-byte k`  |
+| [SEAL3]   | `0x7FC` and shifts to the right by `9`  |
+
+Let's get RC4 out of the way. There is no particularly remarkable constant that will give it away, but you will learn to recognize the algorithm if you have seen it several times. We will study an example here so you are off to a good start with that. The following is a barely annotated Ghidra output for an RC4 implementation:
 ```c++ 
-uVar5 = param_1->kez_len;
-temp_5fdb5bd067 = (byte *)param_1->kez;
 uVar6 = 0;
 uVar8 = 0;
 do {
@@ -419,10 +424,10 @@ bVar5 = 0;
 uVar8 = 0;
 do {
   bVar1 = local_100[uVar8];
-  bVar5 += temp_5fdb5bd067[uVar6 & 0xff] + bVar1;
+  bVar5 += probably_key[uVar6 & 0xff] + bVar1;
   local_100[uVar8] = local_100[bVar5];
   local_100[bVar5] = bVar1;
-  uVar6 = ((uVar6 & 0xff) + 1) % uVar5;
+  uVar6 = ((uVar6 & 0xff) + 1) % probably_key_len;
   uVar8 += 1;
 } while (uVar8 < 0x100);
 uVar3 = 0;
@@ -443,9 +448,26 @@ if (dVar8 != 0) {
   } while (dVar8 != 0);
 }
 ```
+If we may direct your attention to two very integral aspects of this code. First of all, an array of 256 integers is initialized to contain the numbers from 0 to 255:
+```c++
+do {
+  local_100[uVar8] = (byte)uVar8;
+  uVar8 += 1;
+} while (uVar8 < 0x100);
+```
+This is the first phase of the RC4 key scheduling part. Secondly, during the actual encryption, you will see something like this:
+```c++
+*pbVar10 = local_100[(byte)(local_100[uVar7] + bVar2)] ^ pbVar10[iVar9];
+```
+To be precise, the key schedule array is now being used in a very particular way: The element `local_100[uVar7]` from the array is used as an offset for indexing the same array again. Also, there's an XOR right somewhere near this.
 
+## Block Cipher Identification
 
+Pretty much every block cipher uses characteristic constants, because they (better) contain a nonlinear component. This part of the algorithm is usually implemented as a substitution box (S-box). Moreover, this S-box is usually a large lookup array of precomputed numbers. Find them, and you win: Take the first few of them and google their hex representation.
 
+The following is a short flowchart summary of what we learned:
+
+![](algorithm-identification.png)
 
 
 
@@ -460,3 +482,5 @@ if (dVar8 != 0) {
 [NTF-MSDN]: https://blag.nullteilerfrei.de/2019/07/29/ghidra-msdn-offline-library-love/
 [ReactOS]: https://reactos.org/
 [PECheat]: http://www.openrce.org/reference_library/files/reference/PE%20Format.pdf
+[SEAL3]: https://web.cs.ucdavis.edu/~rogaway/papers/seal.pdf
+[SALSA20]: https://cr.yp.to/snuffle.html
