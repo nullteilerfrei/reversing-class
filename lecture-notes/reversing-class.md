@@ -27,7 +27,7 @@ Furthermore, the binaries analyzed during the course will usually have been comp
 
 ## Alternatives
 
-The industry standard for binary reverse engineering is [IDA], using the [HexRays Decompiler]. However, these are not exactly cheap. Before the release of the Ghidra, the only alternatives were [RetDec] and [Hopper], but both of these are arguably less powerfull than Ghidra and IDA. Given these considerations, we consider Ghidra the best choice for entry level reverse engineering. 
+The industry standard for binary reverse engineering is [IDA][], using the [HexRays Decompiler][]. However, these are not exactly cheap. Before the release of the Ghidra, the only alternatives were [RetDec][] and [Hopper][], but both of these are arguably less powerfull than Ghidra and IDA. Given these considerations, we consider Ghidra the best choice for entry level reverse engineering. 
 
 ## Motivations for Reverse Engineering
 
@@ -91,14 +91,14 @@ Some malware is produced by so-called _Builders_. While these are not precisely 
 ### Where to Get The Malware
 
 - Use malware repositories:
-  - Get a job in the industry to get access to [VirusTotal].
-  - If that is not an option, use [MalShare] or [URLhaus]
+  - Get a job in the industry to get access to [VirusTotal][].
+  - If that is not an option, use [MalShare][] or [URLhaus][]
 - Sometimes, friendly cyber criminals just send you malware. Keep an eye on your inbox.
 - If you are very important, you might even get targeted malware. Lucky you!
 
 # A Few Hints
 
-- You should import [our keybindings](../ghIDA.kbxml). These [keybindings](../ghIDA.kbxml) strive to be as close as possible to the [IDA] keybindings because we are used to them. Also, they are good. Look, if you use different keybindings, this will only be confusing during the course! Just import [the damn keybindings](../ghIDA.kbxml)!
+- You should import [our keybindings](../ghIDA.kbxml). These [keybindings](../ghIDA.kbxml) strive to be as close as possible to the [IDA][] keybindings because we are used to them. Also, they are good. Look, if you use different keybindings, this will only be confusing during the course! Just import [the damn keybindings](../ghIDA.kbxml)!
 - Variables are a concept not present in machine code. Ghidra tries to map memory regions to variables in the decompiled code and may change this mapping after each of your operations. If these changes get in your way (and they will), we recommend forcing Ghidra to fix the current mapping by selecting the entry **Commit Locals** from the decompiler context menu.
 - Select **Edit → Tool Options → Listing Fields → Cursor Text Highlight** and switch it from middle mouse button to left mouse button. This way, when you click on a symbol, it will highlight all other occurrences.
 
@@ -111,7 +111,7 @@ Open the binary with Ghidra, and open it in the decompiler. Let Ghidra analyze i
 
 ## The Windows API
 
-When we look at its entry point, we see function calls named `GetProcessHeap`, `HeapAlloc`, and `GetWindowsDirectoryW` which are highlighted in a dark shade of blue. These are calls to Windows API functions, i.e. these are functions that are provided by the Windows OS. To understand what they do, you will have to refer to the [MSDN Library]. If you are on Windows, then you can refer to [this blog article][NTF-MSDN] for how to obtain an offline copy of this API reference. Sadly, we do not know of any cross-platform alternative at this point in time. However, it is quite efficient to simply Google the name of the API function and take the first hit.
+When we look at its entry point, we see function calls named `GetProcessHeap`, `HeapAlloc`, and `GetWindowsDirectoryW` which are highlighted in a dark shade of blue. These are calls to Windows API functions, i.e. these are functions that are provided by the Windows OS. To understand what they do, you will have to refer to the [MSDN Library][]. If you are on Windows, then you can refer to [this blog article][NTF-MSDN] for how to obtain an offline copy of this API reference. Sadly, we do not know of any cross-platform alternative at this point in time. However, it is quite efficient to simply Google the name of the API function and take the first hit.
 
 There are some Windows API naming conventions worth mentioning: Often, there are two versions of the same function; one ending with the letter `A` and one ending with the letter `W`. The former stands for "ASCII" while the latter stands for "Wide", and it means that the former version of this function works on 8-bit ASCII strings while the latter works on 16-bit wide character unicode strings (UTF-16 Little Endian without BOM, if you want to be precise). Furthermore, some functions have extended variants which are suffixed with `Ex`, for example `VirtualAlloc` and `VirtualAllocEx`. 
 
@@ -212,7 +212,7 @@ We have seen the code of two Windows executables already, but it is worth noting
 
 A PE file has several _sections_, one of which contains the executable code. This section is normally called `.text` and contains the entry point. There are other frequent fliers such as `.data`, `.rdata`, `.rsrc`, and `.reloc`. We will not go into detail about what they are used for; they are placed in memory by the PE loader and Ghidra will emulate this mapping.
 
-The header also contains information about the _Dynamic Link Libraries_ (DLLs) required by the executable. These DLL files are also PE files, and the PE loader loads them into the same memory space. Ghidra can emulate this as well: When importing a file, click **Options** and check **Load External Libraries** (potentially edit the import paths) to make Ghidra follow Win32 API imports into the corresponding DLLs. If you have a Windows OS, you can use the DLLs from that machine. Alternatively, we provide DLLs from a copy of [ReactOS], which is a free and open source Windows clone.
+The header also contains information about the _Dynamic Link Libraries_ (DLLs) required by the executable. These DLL files are also PE files, and the PE loader loads them into the same memory space. Ghidra can emulate this as well: When importing a file, click **Options** and check **Load External Libraries** (potentially edit the import paths) to make Ghidra follow Win32 API imports into the corresponding DLLs. If you have a Windows OS, you can use the DLLs from that machine. Alternatively, we provide DLLs from a copy of [ReactOS][], which is a free and open source Windows clone.
 
 These DLLs need to be loaded so that the process can call the Windows API functions we have seen before: The code for each of these functions resides in a system DLL.
 
@@ -406,11 +406,11 @@ If you can identify something that looks like an encryption key, you should lean
 
 Now if we are operating under the assumption that the code is cryptographic in nature, there's a chance that you are dealing with assymetric ciphers such as RSA or ECC. In that case you'll have to do some learning, because we won't cover it here. More frequent are symmetric _block_ and _stream_ ciphers. We are trying to give a practical guide here, so bear with us - none of what we explain is theoretically complete or even sound. But it will work. We will talk about identification of block ciphers later, there is a very reliable method of identifying them. As far as stream ciphers go, identification is a little bit more tricky. We will give you techniques for the three ciphers we see most often:
 
-| Cipher    | Telltale                                |
-|:----------|:----------------------------------------|
-| RC4       | will be explained below                 |
-| [SALSA20] | the constant string `expand 32-byte k`  |
-| [SEAL3]   | `0x7FC` and shifts to the right by `9`  |
+| Cipher      | Telltale                                |
+|:------------|:----------------------------------------|
+| RC4         | will be explained below                 |
+| [SALSA20][] | the constant string `expand 32-byte k`  |
+| [SEAL3][]   | `0x7FC` and shifts to the right by `9`  |
 
 Let's get RC4 out of the way. There is no particularly remarkable constant that will give it away, but you will learn to recognize the algorithm if you have seen it several times. We will study an example here so you are off to a good start with that. The following is a barely annotated Ghidra output for an RC4 implementation:
 ```c++ 
