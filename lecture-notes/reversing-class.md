@@ -469,6 +469,146 @@ The following is a short flowchart summary of what we learned:
 
 ![](algorithm-identification.png)
 
+# Ghidra Scripting
+
+There comes a day in the life of every reverse engineer when they wish they could automate something. Luckily, you can. Im Ghidra, you automate things by writing Ghidra scripts. We recommend that you write them in Java, because Ghida Scripting integrates with the Eclipse IDE. Having an IDE is so much better than not having an IDE, especially when you are facing a true blood Java API. It gives you auto-completion and inline documentation. Look, this is no time for false pride. Just use Java.
+
+For this section, recall the sample with SHA-256 hash
+```
+2396c9dac2184405f7d1f127bec88e56391e4315d4d2e5b951c795fdc1982d59
+```
+which we analyzed earlier. It deobfuscates its strings with the routine at offset `0x00403fba`, and it took us a while to replicate this for every obfuscated string manually. Let's automate this! As always in programming, we need to break this task down into its essential components:
+
+1. Find all calls of a given function, in this case the one at `0x00403fba`.
+2. Determine its two arguments (the address of the obfuscated string and its size, respectively).
+3. Read the obfuscated string.
+4. Deobfuscate the obfuscated string.
+5. Overwrite the obfuscated string with the deobfuscated result.
+
+Now it is worth mentioning that the code is _wrong_ after step 5 in the sense that the function `FUN_00403fba` should now be read as the identity function:
+```c
+  pBVar1 = FUN_00403fba("search",6);
+  pBVar2 = FUN_00403fba("GET",3);
+  pBVar3 = FUN_00403fba("q=",2);
+```
+In this example, `pBVar1` will be the C-string `"search"`. The following sections explain the above 5 steps, but it might be a good idea to look at [the full script][DownRageStrings] while reading them.
+
+## Preliminaries
+
+Now to business. First, open the **Script Manager** view from the **Window** menu. To create a script, you have to click all the buttons in the toolbar until you find the correct one. It looks like a tiny scroll with a plus symbol. When you think about it, it's actually not a bad symbol. You are then prompted to choose between Java and Python, and you choose Java, even if it stings. Close the built-in editor that opens and open the script in Eclipse instead (there's a toolbar button).
+
+You will write a class that inherits from `GhidraScript` and this gives you access to the methods of that class, which are referred to as the _"flat API"_. Those are quite useful because they remove a lot of otherwise necessary boilerplate code.
+
+## Finding All Calls
+
+Now, let's get this show on the road for real, though. We will need a reference to the deobfuscation function:
+```java
+String deobfuscatorName;
+
+try {
+    deobfuscatorName = askString(
+        "Enter Name",
+        "Enter the name of the deobfuscation function below:",
+        getFunctionBefore(currentAddress.next()).getName()
+    );
+} catch (CancelledException X) {
+    return;
+}
+
+Function deobfuscator = getGlobalFunctions(deobfuscatorName).get(0);
+```
+Here, we prompt the user for the name of that function. The `getGlobalFunctions` method is part of the flat API. It returns a list of all functions with the given name (that's right) and we take the first of these. Hoping, of course, that there is only one. To list all calls to this function, we use the flat API method `getReferencesTo`:
+```java
+for (Reference ref : getReferencesTo(deobfuscator.getEntryPoint())) {
+    if (ref.getReferenceType() != RefType.UNCONDITIONAL_CALL)
+        continue;
+    Address callAddr = ref.getFromAddress();
+    /* ... */
+}
+```
+The variable `callAddr` should now contain the address where the deobfuscation function is called. 
+
+## Determining Argument Values
+
+Since we have a decompiler, this information is available in principle. Internally, Ghidra uses an intermediate language referred to as _pcode_, which is a simple assembly language. The pcode variable which is passed as the argument to the function call is easily determined, but we then have to trace its value back to the actual constant. Let's look at some code first and then explain this a bit more:
+```java
+private OptionalLong getConstantCallArgument(Address addr, int index)
+        throws IllegalStateException, UnknownVariableCopy
+{
+    Function caller = getFunctionBefore(addr);
+    if (caller == null)
+        throw new IllegalStateException();
+
+    DecompInterface decompInterface = new DecompInterface();
+    decompInterface.openProgram(currentProgram);
+    DecompileResults decompileResults = decompInterface.decompileFunction(caller, 120, monitor);
+    if (!decompileResults.decompileCompleted())
+        throw new IllegalStateException();
+
+    HighFunction highFunction = decompileResults.getHighFunction();
+    Iterator<PcodeOpAST> pCodes = highFunction.getPcodeOps(addr);
+    while (pCodes.hasNext()) {
+        PcodeOpAST instruction = pCodes.next();
+        if (instruction.getOpcode() == PcodeOp.CALL) {
+            return traceVarnodeValue(instruction.getInput(index));
+        }
+    }
+    throw new IllegalStateException();
+}
+```
+Here, we iterate the pcode instructions that correspond to the function call until we find the pcode equivalent of the call. Then, we use the following function to attempt to trace the argument back to a constant value:
+```java
+private OptionalLong traceVarnodeValue(Varnode argument) throws UnknownVariableCopy {
+    while (!argument.isConstant()) {
+        PcodeOp ins = argument.getDef();
+        switch (ins.getOpcode()) {
+        case PcodeOp.CAST:
+        case PcodeOp.COPY:
+            argument = ins.getInput(0);
+            break;
+        case PcodeOp.PTRSUB:
+        case PcodeOp.PTRADD:
+            argument = ins.getInput(1);
+            break;
+        case PcodeOp.INT_MULT:
+        case PcodeOp.MULTIEQUAL:
+            // known cases where an array is indexed
+            return OptionalLong.empty();
+        default:
+            // don't know how to handle this yet.
+            throw new UnknownVariableCopy(ins, argument.getAddress());
+        }
+    }
+    return OptionalLong.of(argument.getOffset());
+}
+```
+The `CAST` and `COPY` pcodes are straightforward assignments, and sometimes Ghidra decides to model constant assignments as references to pointers with an offset of `0`, in which case the actual constant is the first argument of the pcode instruction `PTRSUB` or `PTRADD`. Finally, the pcode instructions `INT_MULT` and `MULTIEQUAL` occur in array indexing operations and we decided to only deal with arguments that are truly constant.
+
+## Reading and Writing
+
+We are now ready to put everything together:
+```java
+OptionalLong a1Option = getConstantCallArgument(callAddr, 1);
+OptionalLong a2Option = getConstantCallArgument(callAddr, 2);
+
+if (a1Option.isEmpty() || a2Option.isEmpty())
+    continue;
+
+long offset = a1Option.getAsLong();
+int size = (int) a2Option.getAsLong();
+
+byte[] buffer = getOriginalBytes(toAddr(offset), size);
+```
+Unfortunately, the method `getOriginalBytes` is _not_ a part of the flat API, but the good news is that you can copy and paste it from [the source code][DownRageStrings]. It reads `size` many bytes from the given address as they appear in the original, unpatched binary. Assuming you have implemented a method `deobfuscateString`, the rest is easy:
+```java
+Address stringAddr = toAddr(offset);
+deobfuscateString(buffer);
+setBytes(stringAddr, buffer);
+clearListing(stringAddr, stringAddr.add(size - 1));
+createData(stringAddr, new ArrayDataType(CharDataType.dataType, size, 1));
+createBookmark(stringAddr, "DeobfuscatedString", new String(buffer));
+```
+The last three flat API calls remove all data type definitions from the memory range where the deobfuscated string has been written, and then we define a `char` array of the correct length in that spot. Finally, a bookmark is added to have a convenient overview of all deobfuscated strings.
 
 
 [IDA]: https://www.hex-rays.com/products/ida/
