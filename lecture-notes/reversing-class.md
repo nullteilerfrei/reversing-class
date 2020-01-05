@@ -624,3 +624,5 @@ The last three flat API calls remove all data type definitions from the memory r
 [PECheat]: http://www.openrce.org/reference_library/files/reference/PE%20Format.pdf
 [SEAL3]: https://web.cs.ucdavis.edu/~rogaway/papers/seal.pdf
 [SALSA20]: https://cr.yp.to/snuffle.html
+
+[DownRageStrings]: ../scripts/java/DownRageStrings.java
