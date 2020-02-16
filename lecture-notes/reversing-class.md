@@ -2,7 +2,7 @@
 
 ## What is Reverse Engineering?
 
-In the context of software, reverse engineering is the process of recovering an abstract description of how a program operates. In many cases, the reverse engineer has nothing to work with except for a compiled binary, which is also the situation we will focus on. 
+In the context of software, reverse engineering is the process of recovering an abstract description of how a program operates. In many cases, the reverse engineer has nothing to work with except for a compiled binary, which is also the situation we will focus on.
 
 One important discipline of reverse engineering is _dynamic_ analysis, which focuses on studying the behaviour of a program during execution, often by means of a debugger. Conversely, _static_ analysis is the art of deducing program logic by pure deductive reasoning from the code. In reality, a hybrid approach is widely considered to be most efficient. Be that as it may, this is the last we are going to say about dynamic analysis here.
 
@@ -27,7 +27,7 @@ Furthermore, the binaries analyzed during the course will usually have been comp
 
 ## Alternatives
 
-The industry standard for binary reverse engineering is [IDA][], using the [HexRays Decompiler][]. However, these are not exactly cheap. Before the release of the Ghidra, the only alternatives were [RetDec][] and [Hopper][], but both of these are arguably less powerfull than Ghidra and IDA. Given these considerations, we consider Ghidra the best choice for entry level reverse engineering. 
+The industry standard for binary reverse engineering is [IDA][], using the [HexRays Decompiler][]. However, these are not exactly cheap. Before the release of the Ghidra, the only alternatives were [RetDec][] and [Hopper][], but both of these are arguably less powerfull than Ghidra and IDA. Given these considerations, we consider Ghidra the best choice for entry level reverse engineering.
 
 ## Motivations for Reverse Engineering
 
@@ -72,11 +72,11 @@ The following are some possible final stages of a malware deployment:
 - Mineware
 - Wiper
 
-We try to give a brief description of all of these, but note that the lines between these terms are quite blurry. Any malware can be one, or multiple, or not quite any of the above. 
+We try to give a brief description of all of these, but note that the lines between these terms are quite blurry. Any malware can be one, or multiple, or not quite any of the above.
 
-A _backdoor_ is the most rudimentary malware; it simply offers some way to gain access to the infected system. Common types of backdoors are connect-back shells or bindshells, or even more simple tools that can execute arbitrary commands. A _Remote Access Tool_ (RAT) is any malware that implements remote access to the operating system. The scope and extent of this access is left intentionally vague but may include things such as file system access, registry modification, command execution, upload, download, and remote desktop capabilities. 
+A _backdoor_ is the most rudimentary malware; it simply offers some way to gain access to the infected system. Common types of backdoors are connect-back shells or bindshells, or even more simple tools that can execute arbitrary commands. A _Remote Access Tool_ (RAT) is any malware that implements remote access to the operating system. The scope and extent of this access is left intentionally vague but may include things such as file system access, registry modification, command execution, upload, download, and remote desktop capabilities.
 
-Malware is referred to as a _bot_ not primarily because of its capabilities, but because of its large-scale distribution and operation: All the bots together form a _botnet_, and bots are often used to perform tasks for which it is useful to have control over a large number of machines: DDoS, spam mailing, etcetera. 
+Malware is referred to as a _bot_ not primarily because of its capabilities, but because of its large-scale distribution and operation: All the bots together form a _botnet_, and bots are often used to perform tasks for which it is useful to have control over a large number of machines: DDoS, spam mailing, etcetera.
 
 The definition of a _rootkit_ is among the more testy subjects. We will quote Wikipedia:
 
@@ -113,7 +113,7 @@ Open the binary with Ghidra, and open it in the decompiler. Let Ghidra analyze i
 
 When we look at its entry point, we see function calls named `GetProcessHeap`, `HeapAlloc`, and `GetWindowsDirectoryW` which are highlighted in a dark shade of blue. These are calls to Windows API functions, i.e. these are functions that are provided by the Windows OS. To understand what they do, you will have to refer to the [MSDN Library][]. If you are on Windows, then you can refer to [this blog article][NTF-MSDN] for how to obtain an offline copy of this API reference. Sadly, we do not know of any cross-platform alternative at this point in time. However, it is quite efficient to simply Google the name of the API function and take the first hit.
 
-There are some Windows API naming conventions worth mentioning: Often, there are two versions of the same function; one ending with the letter `A` and one ending with the letter `W`. The former stands for "ASCII" while the latter stands for "Wide", and it means that the former version of this function works on 8-bit ASCII strings while the latter works on 16-bit wide character unicode strings (UTF-16 Little Endian without BOM, if you want to be precise). Furthermore, some functions have extended variants which are suffixed with `Ex`, for example `VirtualAlloc` and `VirtualAllocEx`. 
+There are some Windows API naming conventions worth mentioning: Often, there are two versions of the same function; one ending with the letter `A` and one ending with the letter `W`. The former stands for "ASCII" while the latter stands for "Wide", and it means that the former version of this function works on 8-bit ASCII strings while the latter works on 16-bit wide character unicode strings (UTF-16 Little Endian without BOM, if you want to be precise). Furthermore, some functions have extended variants which are suffixed with `Ex`, for example `VirtualAlloc` and `VirtualAllocEx`.
 
 ## Renaming Variables
 
@@ -127,7 +127,7 @@ Furthermore, the decompiler sometimes does not guess the correct type for a vari
 
 ## Naming Constants
 
-The Windows API also specifies a large amount of named constants which appear as parameters to the various function calls you will encounter. In the decompiled code, these constants appear as numeric literals, which is somewhat hard to understand. Luckily, Ghidra has a (more or less) convenient way to replace such constants by a name under which they appear in the Windows API headers. Sadly, at the time of writing, you can not do this in the decompiler view - you will have to locate the constant in the disassembly. Once you have found it, right click it and select the context menu entry **Rename Equate** to bring up a dialog where you can search for known names matching this value. 
+The Windows API also specifies a large amount of named constants which appear as parameters to the various function calls you will encounter. In the decompiled code, these constants appear as numeric literals, which is somewhat hard to understand. Luckily, Ghidra has a (more or less) convenient way to replace such constants by a name under which they appear in the Windows API headers. Sadly, at the time of writing, you can not do this in the decompiler view - you will have to locate the constant in the disassembly. Once you have found it, right click it and select the context menu entry **Rename Equate** to bring up a dialog where you can search for known names matching this value.
 
 For example, the function at offset `0x14000168c` contains a call to `GetVolumeInformationW` and one of its return values is checked for having the flag with value `0x80000` set. The corresponding check in the disassembled  code occurs at `0x14000172c`:
 ```
@@ -228,9 +228,9 @@ Sometimes, certain stages of a malware chain are implemented as shellcode. The m
 
 As we saw in the second sample, plaintext strings in malware can give away a lot of information. Some malware authors care about making our job hard and therefore want to avoid this. A very common technique to conceal strings is to _obfuscate_ them, usually by means of encoding them. Sometimes, this involves the use of cryptographic algorithms with hard-coded keys. Hexadecimal and base64 encoding as well as XOR-based encryption algorithms are so easy to spot that you should keep an eye out for them.
 
-When strings are obfuscated, they need to be decoded first before the malware can use them. More often than not, this is done by a single function. Finding and reverse engineering that function, and consequently decrypting all the strings, can mean a quantum leap in your understanding of the malware. 
+When strings are obfuscated, they need to be decoded first before the malware can use them. More often than not, this is done by a single function. Finding and reverse engineering that function, and consequently decrypting all the strings, can mean a quantum leap in your understanding of the malware.
 
-The following is a string decryption function from the malware sample with SHA-256 hash 
+The following is a string decryption function from the malware sample with SHA-256 hash
 ```
 cc8867a5fd62b82e817afc405807f88716960af5744040999b619b126a9ecf57
 ```
@@ -241,7 +241,7 @@ void * __cdecl FUN_00401430(char *param_1)
     void *pvVar1;
     size_t sVar2;
     uint uVar3;
-    
+
     uVar3 = 0;
     pvVar1 = calloc(1,0x1b);
     while( true ) {
@@ -254,7 +254,7 @@ void * __cdecl FUN_00401430(char *param_1)
     return pvVar1;
 }
 ```
-It takes the input string `param_1` and XORs each byte with the constant key `0x03`. 
+It takes the input string `param_1` and XORs each byte with the constant key `0x03`.
 
 As an exercise in string obfuscation, we recommend extracting the C2 servers from the sample with SHA-256 hash
 ```
@@ -304,13 +304,13 @@ Samples can be _packed_, which means that they have been compressed, encoded, en
 
 The program used to pack a sample is referred to as a _packer_. Some people use the term exclusively for tools that use compression as the only means of obfuscation, and use the terms _crypter_ or _protector_ for other variants. We don't.
 
-Packing is a very convenient method of obfuscation: It allows the malware author to use their comfort zone toolchain in development and obfuscate the sample by simply applying a packer to it. Packed samples can be notoriously hard to reverse engineer when the packer stub has been made subject to additional obfuscations that we will discuss below. However, the weakness of packing as an obfuscation technique is the fact that at some point during execution, the unpacked sample will be in memory or on disk. The universal solution to defeat this technique is therefore dynamic analysis, which is out of scope for this course. 
+Packing is a very convenient method of obfuscation: It allows the malware author to use their comfort zone toolchain in development and obfuscate the sample by simply applying a packer to it. Packed samples can be notoriously hard to reverse engineer when the packer stub has been made subject to additional obfuscations that we will discuss below. However, the weakness of packing as an obfuscation technique is the fact that at some point during execution, the unpacked sample will be in memory or on disk. The universal solution to defeat this technique is therefore dynamic analysis, which is out of scope for this course.
 
 ## Control Flow Obfuscation
 
 We refer to _control flow obfuscation_ as any obfuscation technique that alters the control flow of code with the intention to make it more resilient against static analysis. For example:
 
-- **Junk Code**: Insert additional instructions into the code that don't alter its behavior. 
+- **Junk Code**: Insert additional instructions into the code that don't alter its behavior.
 - **Function Chunking**: Split a function into parts, shuffle these around, and connect them with jumps.
 - **Opaque Predicates**: Make code branches depend on information that is constant, but not easily identified as such. For example, check whether `GetTickCount` API returns a value greater than `4`. Or check whether `(5 + 7)` equals `(3 * 2 << 1)`.
 - **Return-Based Calls**: Use the `RET` assembly command to call a function. Ignore this if you don't know assembly, or read up.
@@ -320,7 +320,7 @@ Only the first of these techniques is present in the packed sample with the foll
 ```
 ad320839e01df160c5feb0e89131521719a65ab11c952f33e03d802ecee3f51f
 ```
-It is your exercise to extract the shellcode second stage of this loader. 
+It is your exercise to extract the shellcode second stage of this loader.
 
 ## Runtime API Lookups
 
@@ -384,7 +384,7 @@ If you have nothing to hold on to right away, we recommend the following approac
 
 ## Identifying Compression Algorithms
 
-If you are already quite certain from context that the algorithm processes blobs of unintelligible data, i.e. you are convinced that it is decompression or decryption, then the absence of an encryption key is solid evidence that you are dealing, in fact, with a compression algorithm. Note however that an encryption key doesn't always have to be passed as an argument to the function but could also be generated in some other way. 
+If you are already quite certain from context that the algorithm processes blobs of unintelligible data, i.e. you are convinced that it is decompression or decryption, then the absence of an encryption key is solid evidence that you are dealing, in fact, with a compression algorithm. Note however that an encryption key doesn't always have to be passed as an argument to the function but could also be generated in some other way.
 
 Another algorithmic indicator for compression algorithms is the presence of pointer arithmetic with negative offsets, i.e. a back reference into already decompressed data. For example, consider the following excerpt from a decompiled APLib decompression routine:
 ```c++
@@ -398,7 +398,7 @@ if ((local_8 == 0) && (iVar3 == 2)) {
   }
 }
 ```
-Note particularly the 5th line where `decompressed[-local_18]` is a backwards reference. 
+Note particularly the 5th line where `decompressed[-local_18]` is a backwards reference.
 
 ## Identifying Cryptographic Algorithms
 
@@ -413,7 +413,7 @@ Now if we are operating under the assumption that the code is cryptographic in n
 | [SEAL3][]   | `0x7FC` and shifts to the right by `9`  |
 
 Let's get RC4 out of the way. There is no particularly remarkable constant that will give it away, but you will learn to recognize the algorithm if you have seen it several times. We will study an example here so you are off to a good start with that. The following is a barely annotated Ghidra output for an RC4 implementation:
-```c++ 
+```c++
 uVar6 = 0;
 uVar8 = 0;
 do {
@@ -526,7 +526,7 @@ for (Reference ref : getReferencesTo(deobfuscator.getEntryPoint())) {
     /* ... */
 }
 ```
-The variable `callAddr` should now contain the address where the deobfuscation function is called. 
+The variable `callAddr` should now contain the address where the deobfuscation function is called.
 
 ## Determining Argument Values
 
