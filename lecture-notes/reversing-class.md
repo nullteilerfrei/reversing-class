@@ -4,7 +4,7 @@
 
 In the context of software, reverse engineering is the process of recovering an abstract description of how a program operates. In many cases, the reverse engineer has nothing to work with except for a compiled binary, which is also the situation we will focus on.
 
-One important discipline of reverse engineering is _dynamic_ analysis, which focuses on studying the behaviour of a program during execution, often by means of a debugger. Conversely, _static_ analysis is the art of deducing program logic by pure deductive reasoning from the code. In reality, a hybrid approach is widely considered to be most efficient. Be that as it may, this is the last we are going to say about dynamic analysis here.
+One important discipline of reverse engineering is _dynamic_ analysis, which focuses on studying the behaviour of a program during execution, often by means of a debugger. Conversely, _static_ analysis is the art of deducing program logic by pure deductive reasoning from the code. In reality, a hybrid approach is widely considered to be most efficient.
 
 There are many tools available to translate the machine code of a given binary into easier to read types of code. The first step is usually to recover the assembly code. Up until recently, there was no freely available software to recover high-level code. On March 5th, 2019, the NSA publicly released their _decompiler_ and made it freely available: It is called _Ghidra_ and is pronounced the way it is spelled.
 
@@ -16,7 +16,7 @@ One important application of software reverse engineering is the analysis of mal
 
 The course does not cover the following topics:
 
-- Dynamic analysis
+- Ghidra scripting
 - Malware that is not Windows malware
 - Any software that is not malware
 - MSIL malware (because it is not compiled (ಠ_ಠ))
@@ -304,7 +304,7 @@ Samples can be _packed_, which means that they have been compressed, encoded, en
 
 The program used to pack a sample is referred to as a _packer_. Some people use the term exclusively for tools that use compression as the only means of obfuscation, and use the terms _crypter_ or _protector_ for other variants. We don't.
 
-Packing is a very convenient method of obfuscation: It allows the malware author to use their comfort zone toolchain in development and obfuscate the sample by simply applying a packer to it. Packed samples can be notoriously hard to reverse engineer when the packer stub has been made subject to additional obfuscations that we will discuss below. However, the weakness of packing as an obfuscation technique is the fact that at some point during execution, the unpacked sample will be in memory or on disk. The universal solution to defeat this technique is therefore dynamic analysis, which is out of scope for this course.
+Packing is a very convenient method of obfuscation: It allows the malware author to use their comfort zone toolchain in development and obfuscate the sample by simply applying a packer to it. Packed samples can be notoriously hard to reverse engineer when the packer stub has been made subject to additional obfuscations that we will discuss below. However, the weakness of packing as an obfuscation technique is the fact that at some point during execution, the unpacked sample will be in memory or on disk. The universal solution to defeat this technique is therefore dynamic analysis, which we will get into later.
 
 ## Control Flow Obfuscation
 
@@ -611,6 +611,76 @@ createBookmark(stringAddr, "DeobfuscatedString", new String(buffer));
 The last three flat API calls remove all data type definitions from the memory range where the deobfuscated string has been written, and then we define a `char` array of the correct length in that spot. Finally, a bookmark is added to have a convenient overview of all deobfuscated strings.
 
 
+
+# Dynamic Analysis
+
+Whenever analysis of an executable involves actually executing ist, we will refer to this as _"dynamic"_ analysis. Usually, especially with malware, execution of the sample happens inside a virtual machine.
+
+## Behavioral Analysis
+
+The most straightforward type of dynamic analysis is simply observing the execution by means of monitoring software such as:
+
+- [Process Hacker][] (or Process Explorer from the [Sysinternals Suite][])
+- [Sysinternals Suite][] (especially Process Monitor)
+- [Wireshark][] (or lightweight alternatives such as [SmartSniff][])
+- [Rohitab API Monitor][] (there is no alternative)
+
+This would happen inside a virtual machine (VM) with a Windows installed on it that is outdated to the usual degree. We recommend to **disable its internet connection by default** so you do not generate network traffic that you might regret. For example, a malicious sample might actually do something _malicious_ to other parties on the internet, like sending spam, or exploiting other machines to spread. Another concern, especially for targeted malware, is that you may leak the fact that the sample is being analyzed to its operator. Unless you _specifically_ want to do so, this would give your adversary an information advantage. Now, the idea is fairly simple:
+
+1. Launch monitoring tools.
+2. Create a snapshot.
+3. Run sample.
+4. Draw conclusions.
+
+We will ignore VM detection complications for now and discuss those later. Then, the following is a **very** non-exhaustive list of things that you might observe:
+
+1. If the sample starts scanning _quite_ a lot of files, then odds are it will soon start encrypting them.
+2. If you see the process working a lot on your CPU for a while and then normalizing, it likely decoded a next stage.
+3. If you see the process working a lot without end, it's a miner.
+4. There are various scenarios of process injection that you can observe; usually, it involves other processes being launched, often without a visible window. The executable may also launch itself or system binaries to inject into.
+5. The process might write an executable to disk and launch it. If it's from 2011. Or targeted.
+6. There may be (attempted) network traffic that reveals a potential C2 server.
+
+In some cases, you may already have reached your analysis goals after just watching the sample execute. For example, if your goal was identification and the sample is a piece of ransomware, then googling the ransom note from your VM will get you there. In most cases however, observing the behavior is a first step for you to structure your actual analysis and give you entry points for various bottom-up approaches in static analysis. 
+
+> TODO: Example & Exercise
+
+## Anti-Anti-Analysis
+
+Unfortunately, malware authors are quite aware that people run their product in VMs. Whether it is to vex analysts or delay the response time of the AV vendors they work for, very often malware will change its behavior when it (actively) detects a virtualized environment. Most of the time, this changed behavior is immediate termination. 
+
+The malware attempting to circumvent your analysis and you trying to circumvent these attempts is a never-ending arms race. While there is no end-all solution, there are a few easy wins:
+
+1. Some malware detects running analysis tools based on their image file name. So, rename all your monitoring tool executables to something else.
+2. You can try to make your VM appear more like an actual computer in case any of the following is checked: Use a background image, have some documents in your documents folder, have a few windows open other than the monitoring tools, have some icons on the desktop, and a populated browser history.
+3. Use an innocuous username like _"Hagbard Celine"_.
+4. In some cases, the malware knows that it will always have a certain file name when properly deployed. If you know what that is, use it. If you don't know, refrain from naming the sample after its hash or other obvious analyst tropes.
+5. If the sample just doesn't work, remember it might want to run as admin.
+6. Some malware will die on the spot if an internet connection check fails. Internet connection checks can take various forms and shapes; they range from manually implemented ICMP requests to calling high level Windows API routines like `InternetGetConnectedState`. Getting around these is possible by means of internet simulation (see below), or internet.
+
+Instead of _detecting_ your environment, some malware will actually just attempt to terminate all sorts of analysis tools. To combat this, find the process of your monitoring tool in Process Hacker (this may be Process Hacker itself) and select its **Properties**. Go to **General**, **Permissions**. Remove every entry from the ACL and add an entry for `Everyone`, denying them all access to this process.
+
+Finally, we stress again that these are just the easy and quick wins. Virtual machine detection can range from the above, simple checks to rather sophisticated ones. There are tools like [InviZzzible][] and [pafish][] which offer reference implementations of various VM checks and can also be used to vet your VM with respect to how detectable it is. Preventing _all_ checks from these tools to be successful is not something you are likely to achieve on your own on a weekend.
+
+## API Tracing
+
+It is not recommended to always use an API tracer by default; the way it does its job is very easily detectable by malware because it is invasive to the analyzed process: It either injects a DLL into the analyzed process or performs in-memory hooking. The [Rohitab API Monitor][] has several methods of attaching to a process, and some will work better than others.
+
+The tool does exactly what the name suggests, it logs all Win32 API calls that are made by a certain process. This is a very rich source of information:
+
+- You might notice that a certain rare or low-level API call is used instead of the one you would usually expect.
+- You can inspect the buffers of `memcpy` calls before and after the operation.
+- You can tell whether the sample uses the Win32 API to check for an internet connection.
+- If a certain API call precedes an unexpected termination of the malware, this might help you understand an anti-analysis technique.
+
+To summarize, API tracing is a source of very detailed information, but it is rarely useful unless you have a particular goal. Just running a trace and staring at it will rarely reveal any patterns. It might, but usually other methods work better for that.
+
+> TODO: Example & Exercise
+
+
+
+
+
 [IDA]: https://www.hex-rays.com/products/ida/
 [HexRays Decompiler]: https://www.hex-rays.com/products/decompiler/
 [Hopper]: https://www.hopperapp.com/
@@ -624,5 +694,19 @@ The last three flat API calls remove all data type definitions from the memory r
 [PECheat]: http://www.openrce.org/reference_library/files/reference/PE%20Format.pdf
 [SEAL3]: https://web.cs.ucdavis.edu/~rogaway/papers/seal.pdf
 [SALSA20]: https://cr.yp.to/snuffle.html
+[Process Hacker]: https://processhacker.sourceforge.io/
+[Sysinternals Suite]: https://docs.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite
+[Wireshark]: https://www.wireshark.org/
+[SmartSniff]: https://www.nirsoft.net/utils/smsniff.html
+[Rohitab API Monitor]: https://www.rohitab.com/apimonitor
+[x64dbg]: https://x64dbg.com/
+[OllyDumpEx]: https://low-priority.appspot.com/ollydumpex/#download
+[MegaDumper]: https://github.com/CodeCracker-Tools/MegaDumper
+[PEBear]: https://hshrzd.wordpress.com/pe-bear/
+[010 Editor]: https://www.sweetscape.com/010editor/
+[HxD]: https://mh-nexus.de/en/hxd/
+[wxHexEditor]: https://www.wxhexeditor.org/
+[InviZzzible]: https://github.com/CheckPointSW/InviZzzible
+[pafish]: https://github.com/a0rtega/pafish
 
 [DownRageStrings]: ../scripts/java/DownRageStrings.java
