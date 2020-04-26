@@ -29,14 +29,18 @@ public class KpotStealerStrings extends GhidraScript {
 		return ret;
 	}
 
-	public OptionalLong findGlobalBufferAddress(Function func, int searchDepth) {
+	private Boolean isGlobalBufferAccess(Instruction instruction) {
+		return (instruction.getOperandType(0) & OperandType.REGISTER) == OperandType.REGISTER
+				&& (instruction.getOperandType(1) & OperandType.ADDRESS) == OperandType.ADDRESS
+				&& (instruction.getOperandType(1) & OperandType.DYNAMIC) == OperandType.DYNAMIC;
+	}
+
+	private OptionalLong findGlobalBufferAddress(Function func, int searchDepth) {
 		int i = 0;
 		for (Instruction instruction : currentProgram.getListing().getInstructions(func.getEntryPoint(), true)) {
 			if (instruction.getMnemonicString().equals("LEA")) {
 				// the first operand of LEA is the target register, the second is the address
-				if ((instruction.getOperandType(0) & OperandType.REGISTER) == OperandType.REGISTER
-						&& (instruction.getOperandType(1) & OperandType.ADDRESS) == OperandType.ADDRESS
-						&& (instruction.getOperandType(1) & OperandType.DYNAMIC) == OperandType.DYNAMIC) {
+				if (isGlobalBufferAccess(instruction)) {
 					// this gets the "objects" for the second argument which. This is an array of
 					// values:
 					//
@@ -56,7 +60,7 @@ public class KpotStealerStrings extends GhidraScript {
 	}
 
 	public void run() throws Exception {
-		String deobfuscatorName = "EvStringDeobfuscate";
+		String deobfuscatorName;
 		try {
 			deobfuscatorName = askString("Enter Name", "Enter the name of the deobfuscation function below:",
 					getFunctionBefore(currentAddress.next()).getName());
@@ -76,7 +80,7 @@ public class KpotStealerStrings extends GhidraScript {
 		} else {
 			globalBufferPtr = optionalGlobalBufferPtr.getAsLong();
 		}
-		println(String.format("globalBufferPtr=%08X.", globalBufferPtr));
+		println(String.format("using global buffer at %08X.", globalBufferPtr));
 		OUTER_LOOP: for (Address callAddr : getCallAddresses(deobfuscator)) {
 			monitor.setMessage(String.format("parsing call at %08X", callAddr.getOffset()));
 			int arguments[] = { 1 };
@@ -100,7 +104,7 @@ public class KpotStealerStrings extends GhidraScript {
 				byte[] obfuscatedBuffer = getOriginalBytes(toAddr(encryptedPtr), dataLength);
 				byte decrypted[] = deobfuscateString(obfuscatedBuffer, xorKey);
 
-				String deobfuscated = AsciiDammit(decrypted, dataLength);
+				String deobfuscated = new String(decrypted);
 				println(String.format("%08X (off=%d, ptr=%d, len=%d): %s", callAddr.getOffset(), globalBufferIndex,
 						encryptedPtr, dataLength, deobfuscated));
 				setComment(callAddr, String.format("Deobfuscated: %s", deobfuscated));
@@ -110,37 +114,10 @@ public class KpotStealerStrings extends GhidraScript {
 
 			} catch (IllegalStateException e) {
 				println(String.format("IllegalStateException at %08X.", callAddr.getOffset()));
+			} catch (Exception e) {
+				println(String.format("Unhandeled exception at %08X.", callAddr.getOffset()));
 			}
 		}
-	}
-
-	public void hexdump(byte[] msg) {
-		for (int j = 1; j < msg.length + 1; j++) {
-			if (j % 8 == 1 || j == 0) {
-				if (j != 0) {
-					println("");
-				}
-				print(String.format("0%d\t|\t", j / 8));
-			}
-			print(String.format("%02X", msg[j - 1]));
-			if (j % 4 == 0) {
-				print(" ");
-			}
-		}
-		println("");
-	}
-
-	private String AsciiDammit(byte[] data, int len) {
-		boolean isWide = true;
-		byte[] nonWide = new byte[len / 2];
-		for (int i = 0; i < len / 2; i++) {
-			if (data[i * 2 + 1] != '\0') {
-				isWide = false;
-				break;
-			}
-			nonWide[i] = data[i * 2];
-		}
-		return new String(isWide ? nonWide : data);
 	}
 
 	class UnknownVariableCopy extends Exception {
