@@ -60,7 +60,15 @@ public class ZLoaderStrings extends GhidraScript {
 					}
 				}
 
-				byte obfuscatedBuffer[] = getOriginalBytes(toAddr(options[0].getAsLong()), 0x100);
+				Address obfuscatedDataAddress = toAddr(options[0].getAsLong());
+				byte obfuscatedBuffer[] = getOriginalBytes(obfuscatedDataAddress, 0x100);
+				if (obfuscatedBuffer[1] == 0) { // indicates wide-string
+					byte tmp[] = FromWideString(obfuscatedBuffer, 0x100);
+					if (tmp != null) {
+						obfuscatedBuffer = tmp;
+					}
+				}
+
 				byte decrypted[] = deobfuscateString(obfuscatedBuffer, xorKey);
 				String deobfuscated = UntilZeroByte(decrypted);
 				println(String.format("0x%08X %s", callAddr.getOffset(), deobfuscated));
@@ -73,6 +81,17 @@ public class ZLoaderStrings extends GhidraScript {
 				println(String.format("IllegalStateException at %08X.", callAddr.getOffset()));
 			}
 		}
+	}
+
+	private byte[] FromWideString(byte[] data, int len) {
+		byte[] ret = new byte[len];
+		for (int i = 0; i < len / 2; i++) {
+			if (data[i * 2 + 1] != '\0') {
+				return ret;
+			}
+			ret[i] = data[i * 2];
+		}
+		return ret;
 	}
 
 	public static byte[] getSliceOfArray(byte[] arr, int start, int end) {
