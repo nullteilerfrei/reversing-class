@@ -63,7 +63,7 @@ public class ZLoaderStrings extends GhidraScript {
 				byte obfuscatedBuffer[] = getOriginalBytes(toAddr(options[0].getAsLong()), 0x100);
 				byte decrypted[] = deobfuscateString(obfuscatedBuffer, xorKey);
 				String deobfuscated = UntilZeroByte(decrypted);
-				println(String.format("%08X: %s", callAddr.getOffset(), deobfuscated));
+				println(String.format("0x%08X %s", callAddr.getOffset(), deobfuscated));
 				setComment(callAddr, String.format("Deobfuscated: %s", deobfuscated));
 				createBookmark(callAddr, "DeobfuscatedString", deobfuscated);
 			} catch (UnknownVariableCopy e) {
