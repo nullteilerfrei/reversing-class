@@ -16,23 +16,152 @@ import ghidra.util.exception.CancelledException;
 import ghidra.program.model.symbol.*;
 import ghidra.program.model.mem.*;
 import ghidra.program.model.listing.*;
-import ghidra.program.model.lang.*;
 import ghidra.program.model.pcode.*;
 import ghidra.program.database.mem.FileBytes;
 import ghidra.program.model.address.*;
 
 public class ZLoaderStrings extends GhidraScript {
-	private byte[] deobfuscateString(byte[] data, byte[] key) {
+	private class InvalidRegisterNameException extends Exception {
+		public InvalidRegisterNameException(String registerName) {
+			super(String.format("Invalid register name: %s", registerName));
+		}
+	}
+
+	private class RegisterValues {
+		private int[] values;
+		public boolean debug;
+
+		public RegisterValues() {
+			values = new int[8];
+			debug = false;
+		}
+
+		private int nameToIndex(String registerName) throws InvalidRegisterNameException {
+			if (registerName.equals("EAX") || registerName.equals("AL") || registerName.equals("AH")) {
+				return 0;
+			} else if (registerName.equals("EBX") || registerName.equals("BL") || registerName.equals("BH")) {
+				return 1;
+			} else if (registerName.equals("ECX") || registerName.equals("CL") || registerName.equals("CH")) {
+				return 2;
+			} else if (registerName.equals("EDX") || registerName.equals("DL") || registerName.equals("DH")) {
+				return 3;
+			} else if (registerName.equals("EBP") || registerName.equals("BL") || registerName.equals("BH")) {
+				return 4;
+			} else if (registerName.equals("ESI")) {
+				return 5;
+			} else if (registerName.equals("EDI")) {
+				return 6;
+			} else if (registerName.equals("ESP")) {
+				return 7;
+			} else {
+				throw new InvalidRegisterNameException(registerName);
+			}
+		}
+
+		public void set(String registerName, int value, Address address) throws InvalidRegisterNameException {
+			if (debug) {
+				println(String.format("0x%x writing 0x%x to %s", address.getOffset(), value, registerName));
+			}
+			values[nameToIndex(registerName)] = value;
+		}
+
+		public int get(String registerName, Address address) throws InvalidRegisterNameException {
+			int registerValue = values[nameToIndex(registerName)];
+			if (debug) {
+				println(String.format("0x%x reading %s as 0x%x", address.getOffset(), registerName, registerValue));
+			}
+			return registerValue;
+		}
+	}
+
+	private byte[] cryptXor(byte[] data, byte[] key) {
 		final byte[] ret = new byte[data.length];
 		for (int k = 0; k < data.length; k++)
 			ret[k] = (byte) (data[k] ^ key[k % key.length]);
 		return ret;
 	}
 
-	public Boolean isGlobalBufferAccess(Instruction instruction) {
-		return (instruction.getOperandType(0) & OperandType.REGISTER) == OperandType.REGISTER
-				&& (instruction.getOperandType(1) & OperandType.ADDRESS) == OperandType.ADDRESS
-				&& (instruction.getOperandType(1) & OperandType.DYNAMIC) == OperandType.DYNAMIC;
+	private boolean isPrintable(byte c) {
+		return !(c < 0x20 || c > 127);
+	}
+
+	private void hexdump(byte[] data) {
+		int lineWidth = 16;
+		for (int i = 0; i < Math.ceil((double) data.length / lineWidth); i++) {
+			int offset = i * lineWidth;
+			// address
+			print(String.format("%08x  ", offset));
+
+			// actual hex dump
+			for (int j = 0; j < lineWidth; j++) {
+				if (lineWidth / 2 == j) {
+					print(" ");
+				}
+				if (offset + j < data.length) {
+					print(String.format("%02x ", data[offset + j]));
+				} else {
+					print("   ");
+				}
+			}
+
+			// printable
+			print(" |");
+			for (int j = 0; j < lineWidth; j++) {
+				if (offset + j < data.length) {
+					if (isPrintable(data[offset + j])) {
+						print(String.format("%c", data[offset + j]));
+					} else {
+						print(".");
+					}
+				}
+			}
+			print("|\n");
+		}
+	}
+	private Address unpackAddressLE(byte[] data) {
+		return toAddr((data[0] & 0xff) | ((data[1] & 0xff) << 8) | ((data[2] & 0xff) << 16) | ((data[3] & 0xff) << 24));
+	}
+
+	public byte[] readXorKey(Function func, int searchDepth) throws MemoryAccessException {
+		int i = 0;
+		RegisterValues currentValues = new RegisterValues();
+		for (Instruction instruction : currentProgram.getListing().getInstructions(func.getEntryPoint(), true)) {
+			try {
+				if (instruction.getMnemonicString().equals("MOVZX")) {
+					// MOVSX EBX,byte ptr [ECX]=>BYTE_ARRAY_030bc4f0 =
+					// Index 0: EBX
+					// Index 1: ECX
+					String registerName = instruction.getOpObjects(1)[0].toString();
+					int registerValue = currentValues.get(registerName, instruction.getAddress());
+
+					byte[] dataPtr = getOriginalBytes(toAddr(registerValue), 0x4);
+					if (dataPtr != null) {
+						byte[] data = getOriginalBytes(unpackAddressLE(dataPtr), 0x11);
+						if (data != null && data.length == 0x11) {
+							return data;
+						}
+					}
+				} else if (instruction.getMnemonicString().equals("MOV")) {
+					// MOV ECX,dword ptr [030be000 == OBFU_PTR]
+					// Index 0: ECX
+					// Index 1: 030be000
+					String registerName = instruction.getOpObjects(0)[0].toString();
+					int copiedValue = instruction.getInt(1);
+					currentValues.set(registerName, copiedValue, instruction.getAddress());
+				} else if (instruction.getMnemonicString().equals("RET")) {
+					break;
+				}
+			} catch (InvalidRegisterNameException e) {
+				println(String.format("Exception: %s", e.toString()));
+			}
+			i++;
+			if (i > searchDepth)
+				break;
+		}
+
+		byte[] defaultKey = { 0x59, 0x49, 0x2c, 0x72, 0x54, 0x66, 0x79, 0x23, 0x46, 0x33, 0x4d, 0x61, 0x71, 0x31, 0x33,
+				0x69, 0x66 };
+		return defaultKey;
 	}
 
 	public void run() throws Exception {
@@ -44,9 +173,13 @@ public class ZLoaderStrings extends GhidraScript {
 			return;
 		}
 		Function deobfuscator = getGlobalFunctions(deobfuscatorName).get(0);
-		// TODO use first instruction with MOVZX to identify XOr key
-		byte xorKey[] = { 0x59, 0x49, 0x2c, 0x72, 0x54, 0x66, 0x79, 0x23, 0x46, 0x33, 0x4d, 0x61, 0x71, 0x31, 0x33,
-				0x69, 0x66 };
+		byte xorKey[] = readXorKey(deobfuscator, 0x100);
+		if (xorKey == null) {
+			println("Cannot read xorKey");
+			return;
+		}
+		println("Found XorKey:");
+		hexdump(xorKey);
 		OUTER_LOOP: for (Address callAddr : getCallAddresses(deobfuscator)) {
 			monitor.setMessage(String.format("parsing call at %08X", callAddr.getOffset()));
 			int arguments[] = { 1 };
@@ -66,7 +199,7 @@ public class ZLoaderStrings extends GhidraScript {
 					obfuscatedBuffer = readWideString(obfuscatedBuffer, 0x100);
 				}
 
-				byte decrypted[] = deobfuscateString(obfuscatedBuffer, xorKey);
+				byte decrypted[] = cryptXor(obfuscatedBuffer, xorKey);
 				String deobfuscated = readUntilZeroByte(decrypted);
 				println(String.format("0x%08X %s", callAddr.getOffset(), deobfuscated));
 				setComment(callAddr, String.format("Deobfuscated: %s", deobfuscated));
