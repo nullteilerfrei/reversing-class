@@ -178,16 +178,16 @@ public class ZLoaderStrings extends GhidraScript {
 	}
 
 	private byte[] getOriginalBytes(Address addr, int size) {
-		MemoryBlock stringMemoryBlock = currentProgram.getMemory().getBlock(addr);
-		if (stringMemoryBlock == null)
+		Memory m = getCurrentProgram().getMemory();
+		MemoryBlock b = m.getBlock(addr);
+		if (b == null)
 			return null;
-		FileBytes fileBytes = currentProgram.getMemory().getAllFileBytes().get(0);
-		MemoryBlockSourceInfo memoryInformation = stringMemoryBlock.getSourceInfos().get(0);
-		long fileOffset = addr.getOffset() - memoryInformation.getMinAddress().getOffset()
-				+ memoryInformation.getFileBytesOffset();
+		MemoryBlockSourceInfo info = b.getSourceInfos().get(0);
+		long fileOffset = addr.getOffset() - info.getMinAddress().getOffset() + info.getFileBytesOffset();
+		FileBytes bytes = m.getAllFileBytes().get(0);
 		try {
 			byte[] result = new byte[size];
-			fileBytes.getOriginalBytes(fileOffset, result);
+			bytes.getOriginalBytes(fileOffset, result);
 			return result;
 		} catch (IOException X) {
 			return null;
@@ -197,11 +197,11 @@ public class ZLoaderStrings extends GhidraScript {
 	private List<Address> getCallAddresses(Function func) {
 		List<Address> addresses = new ArrayList<Address>();
 		for (Reference ref : getReferencesTo(func.getEntryPoint())) {
-			if (ref.getReferenceType() != RefType.UNCONDITIONAL_CALL)
+			RefType refType = ref.getReferenceType();
+			if (refType != RefType.UNCONDITIONAL_CALL && refType != RefType.CONDITIONAL_CALL)
 				continue;
 			addresses.add(ref.getFromAddress());
 		}
-
 		return addresses;
 	}
 
