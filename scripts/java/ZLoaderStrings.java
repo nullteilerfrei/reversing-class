@@ -128,7 +128,8 @@ public class ZLoaderStrings extends GhidraScript {
 		RegisterValues currentValues = new RegisterValues();
 		for (Instruction instruction : currentProgram.getListing().getInstructions(func.getEntryPoint(), true)) {
 			try {
-				if (instruction.getMnemonicString().equals("MOVZX")) {
+				if (instruction.getMnemonicString().equals("MOVZX")
+						|| instruction.getMnemonicString().equals("MOVSX")) {
 					// MOVSX EBX,byte ptr [ECX]=>BYTE_ARRAY_030bc4f0 =
 					// Index 0: EBX
 					// Index 1: ECX
