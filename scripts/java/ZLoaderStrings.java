@@ -63,27 +63,23 @@ public class ZLoaderStrings extends GhidraScript {
 				Address obfuscatedDataAddress = toAddr(options[0].getAsLong());
 				byte obfuscatedBuffer[] = getOriginalBytes(obfuscatedDataAddress, 0x100);
 				if (obfuscatedBuffer[1] == 0) { // indicates wide-string
-					byte tmp[] = FromWideString(obfuscatedBuffer, 0x100);
-					if (tmp != null) {
-						obfuscatedBuffer = tmp;
-					}
+					obfuscatedBuffer = readWideString(obfuscatedBuffer, 0x100);
 				}
 
 				byte decrypted[] = deobfuscateString(obfuscatedBuffer, xorKey);
-				String deobfuscated = UntilZeroByte(decrypted);
+				String deobfuscated = readUntilZeroByte(decrypted);
 				println(String.format("0x%08X %s", callAddr.getOffset(), deobfuscated));
 				setComment(callAddr, String.format("Deobfuscated: %s", deobfuscated));
 				createBookmark(callAddr, "DeobfuscatedString", deobfuscated);
 			} catch (UnknownVariableCopy e) {
 				println(String.format("UnknownVariableCopy at %08X.", callAddr.getOffset()));
-
 			} catch (IllegalStateException e) {
 				println(String.format("IllegalStateException at %08X.", callAddr.getOffset()));
 			}
 		}
 	}
 
-	private byte[] FromWideString(byte[] data, int len) {
+	private byte[] readWideString(byte[] data, int len) {
 		byte[] ret = new byte[len];
 		for (int i = 0; i < len / 2; i++) {
 			if (data[i * 2 + 1] != '\0') {
@@ -94,7 +90,7 @@ public class ZLoaderStrings extends GhidraScript {
 		return ret;
 	}
 
-	public static byte[] getSliceOfArray(byte[] arr, int start, int end) {
+	private static byte[] getSliceOfArray(byte[] arr, int start, int end) {
 		byte[] slice = new byte[end - start];
 		for (int i = 0; i < slice.length; i++) {
 			slice[i] = arr[start + i];
@@ -102,7 +98,7 @@ public class ZLoaderStrings extends GhidraScript {
 		return slice;
 	}
 
-	private String UntilZeroByte(byte[] data) throws Exception {
+	private String readUntilZeroByte(byte[] data) throws Exception {
 		int ZeroPos = -1;
 		for (int i = 0; i < data.length; i++) {
 			if (data[i] == '\0') {
