@@ -77,7 +77,7 @@ public class ListCallsWithXrefs extends GhidraScript {
 						if (calledAddress.isPresent()) {
 							Address address = toAddr(calledAddress.getAsLong());
 							Function function = getFunctionAt(address);
-							if (!addressAlreadyOnList(ret, function.getEntryPoint())) {
+							if (function != null && !addressAlreadyOnList(ret, function.getEntryPoint())) {
 								if (function != null) {
 									ret.add(new FunctionXrefs(function));
 								}
