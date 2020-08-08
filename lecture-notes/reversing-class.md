@@ -404,15 +404,15 @@ Note particularly the 5th line where `decompressed[-local_18]` is a backwards re
 
 If you can identify something that looks like an encryption key, you should lean towards identifying the routine as cryptographic. For example, this is the case if two buffers are passed to the function, one with a lot of data, and one with way less. As noted above, keys may also be hard-coded or generated inside what is indeed a decryption routine.
 
-Now if we are operating under the assumption that the code is cryptographic in nature, there's a chance that you are dealing with assymetric ciphers such as RSA or ECC. In that case you'll have to do some learning, because we won't cover it here. More frequent are symmetric _block_ and _stream_ ciphers. We are trying to give a practical guide here, so bear with us - none of what we explain is theoretically complete or even sound. But it will work. We will talk about identification of block ciphers later, there is a very reliable method of identifying them. As far as stream ciphers go, identification is a little bit more tricky. We will give you techniques for the three ciphers we see most often:
+Now if we are operating under the assumption that the code is cryptographic in nature, there's a chance that you are dealing with assymetric ciphers such as RSA or ECC. In that case you'll have to do some learning, because we won't cover it here. More frequent are symmetric _block_ and _stream_ ciphers. We are trying to give a practical guide here, so bear with us - none of what we explain is theoretically complete or even sound. But it will work. 
 
-| Cipher      | Telltale                                |
-|:------------|:----------------------------------------|
-| RC4         | will be explained below                 |
-| [SALSA20][] | the constant string `expand 32-byte k`  |
-| [SEAL3][]   | `0x7FC` and shifts to the right by `9`  |
+## Block Cipher Identification
 
-Let's get RC4 out of the way. There is no particularly remarkable constant that will give it away, but you will learn to recognize the algorithm if you have seen it several times. We will study an example here so you are off to a good start with that. The following is a barely annotated Ghidra output for an RC4 implementation:
+Pretty much every block cipher uses characteristic constants, because they (better) contain a nonlinear component. This part of the algorithm is usually implemented as a substitution box (S-box). Moreover, this S-box is usually a large lookup array of precomputed numbers. Find them, and you win: Take the first few of them and google their hex representation.
+
+## Stream Cipher Identification
+
+As far as stream ciphers go, identification is a little bit more tricky. There are two ciphers that we encounter most often. The first is RC4, the second is [SALSA20][]. The latter can be easily identified by the existence of the string constant `expand 32-byte k` which is part of the initial state of the cipher. Identifying RC4 is also fairly straightforward. There is no particularly remarkable constant that will give it away, but you will learn to recognize the algorithm if you have seen it several times. We will study an example here so you are off to a good start with that. The following is a barely annotated Ghidra output for an RC4 implementation:
 ```c++
 uVar6 = 0;
 uVar8 = 0;
@@ -461,9 +461,33 @@ This is the first phase of the RC4 key scheduling part. Secondly, during the act
 ```
 To be precise, the key schedule array is now being used in a very particular way: The element `local_100[uVar7]` from the array is used as an offset for indexing the same array again. Also, there's an XOR right somewhere near this.
 
-## Block Cipher Identification
+## Identifying Unicorn Algorithms
 
-Pretty much every block cipher uses characteristic constants, because they (better) contain a nonlinear component. This part of the algorithm is usually implemented as a substitution box (S-box). Moreover, this S-box is usually a large lookup array of precomputed numbers. Find them, and you win: Take the first few of them and google their hex representation.
+Every now and then, you may come across an algorithm that is not covered by what we explained so far. Such an algorithm is likely compression or a stream cipher because block ciphers are so easy to identify based on their SBox constants. This is the difficult case. We recommend the following approach:
+
+1. Reverse engineer the algorithm a little bit.
+2. Formulate an aspect of the algorithm as it might occur in a paper or reference implementation.
+3. Search the internet for various possible formulations.
+4. If you have not succeeded, go back to step 1 or 2.
+
+In order to be efficient during this process, it is important to scope and perpetually scale your efforts in the first step. We recommend the following escalation protocol:
+
+1. Identify remarkable integer constants.
+2. Identify remarkable sequences of arithmetic operations (shifts, rotations, modulo, and/or/not/xor, etc).
+3. Start reverse engineering the first steps of the algorithm until have identified what could be construed as a step in an algorithm.
+4. Do step 3 a few more times (also, do step 1 and 2 a few more times).
+5. Reverse engineer the whole thing.
+6. Give up and re-implement the algorithm from your notes.
+
+Keep in mind that the algorithm you are looking at could be the modification of a standard algorithm. For example, it is not unheard of that RC4 implementations use a key schedule array with more than 256 entries. Similarly, a crafty adversary might use [SALSA20][] but replace the state initialization constant `expand 32-byte k` by 16 random bytes. Unfortunately, in these cases, identification works almost exactly as for any other unicorn.
+
+As an example, we recommend to identify the algorithm used to decode the payload of the loader with the following SHA-256 hash:
+```
+e9d2bc32a003fb158e9774cb25f1b6ff81aca9e9b2651eef80753fd64a8233f0
+```
+It is not a modified algorithm, but it is not a common one.
+
+## Conclusion
 
 The following is a short flowchart summary of what we learned:
 
@@ -471,7 +495,7 @@ The following is a short flowchart summary of what we learned:
 
 # Ghidra Scripting
 
-There comes a day in the life of every reverse engineer when they wish they could automate something. Luckily, you can. Im Ghidra, you automate things by writing Ghidra scripts. We recommend that you write them in Java, because Ghida Scripting integrates with the Eclipse IDE. Having an IDE is so much better than not having an IDE, especially when you are facing a true blood Java API. It gives you auto-completion and inline documentation. Look, this is no time for false pride. Just use Java.
+There comes a day in the life of every reverse engineer when they wish they could automate something. Luckily, you can. Im Ghidra, you automate things by writing Ghidra scripts. We recommend that you write them in Java, because Ghidra Scripting integrates with the Eclipse IDE. Having an IDE is so much better than not having an IDE, especially when you are facing a true blood Java API. It gives you auto-completion and inline documentation. Look, this is no time for false pride. Just use Java.
 
 For this section, recall the sample with SHA-256 hash
 ```
@@ -677,6 +701,95 @@ To summarize, API tracing is a source of very detailed information, but it is ra
 
 > TODO: Example & Exercise
 
+## Unpacking
+
+Another important use case of dynamic analysis is unpacking. Since the payload of a packer will usually be in memory at _some_ point, we _only_ have to debug the packer and add a breakpoint at _just_ the right time. That is obviously not entirely trivial, so we will discuss some heuristics for getting there. The required tools for our VM are the following:
+
+- The [x64dbg][] debugger, with the [OllyDumpEx][] plugin
+- The [PEBear][] tool to repair broken/corrupt PE files.
+- A good hexeditor is always nice. If you have any self respect, pay some money and get the [010 Editor][], otherwise there are a number of free alternatives such as [HxD][] and [wxHexEditor][].
+- Although we will not discuss .NET, we recommend the [MegaDumper][] if you ever have to.
+
+
+
+
+How to dynamic analysis without ASM:
+- Only breakpoints on Win32 API calls #yolo
+- Know EAX and run to return
+
+Maybe mention Unpac.me and other services
+(emphasis on _MENTION_)
+
+
+
+
+GOWLZ:
+- Windows PE file layout on disk vs. in memory
+- Memory layout for Windows processes
+- Different types of breakpoints
+- API routines that are commonly utilized by packers
+- Different types of packers
+  - Droppers
+  - Loaders with different injection methods:
+    - remote injection
+    - local injection
+    - hollowing
+- Low level API calls versus high level API calls
+
+
+
+
+- Tools
+  - OllyDumpEx
+  - Process Hacker
+  - ProcMon
+  - x64dbg
+
+- Identify packers:
+  - no meaningful strings
+  - high entropy
+  - not many imports
+  - behavior shows injection
+  - behavior shows heavy CPU load, then recedes
+  - watchdog pattern
+  - peid
+  - fail at static analysis
+- look at princess locker  
+  ```
+  2e27f4f50343f6a3bfa83229724a7c7880802dd8386b8702159d665bbb56e0fb
+  ```
+  - execute and observe with procmon
+  - oh shit ransomware
+  - BP: FindFirstFileW 
+  - BP: VirtualAlloc 
+  - Dump mapped section that looks like PE
+  - Overwrite PE header with packed sample's header
+  - fix sections (VirtualAddress → PhysicalAddress, VirtualSize max)
+  - Fix alignment
+  - Reverse with Ghidra, bottom up, WSAStartup
+  - String deobfu, 0x6C
+  - Boom C2
+- Look at signed TrickBot packer
+  - Wait until it injects into svchost
+  - Use big-suspender.c to suspend the spawned process as it emerges
+  - Attach debugger, set execution breakpoint on the obviously injected code
+  - WATE
+  - DUMP
+  - Step to the same spot in the dumped binary
+
+
+Dumping
+Breakpoint auf String Decrypt
+Verhalten beobachten
+procmon
+process hacker
+fakenet
+api tracing
+dumping kontrolliert (breakpoint auf ResumeThread)
+dumping irgendwann einfach attachen
+
+
+
 
 
 
@@ -693,6 +806,7 @@ To summarize, API tracing is a source of very detailed information, but it is ra
 [ReactOS]: https://reactos.org/
 [PECheat]: http://www.openrce.org/reference_library/files/reference/PE%20Format.pdf
 [SEAL3]: https://web.cs.ucdavis.edu/~rogaway/papers/seal.pdf
+[HC128]: https://www.ecrypt.eu.org/stream/e2-hc128.html
 [SALSA20]: https://cr.yp.to/snuffle.html
 [Process Hacker]: https://processhacker.sourceforge.io/
 [Sysinternals Suite]: https://docs.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite
