@@ -324,7 +324,7 @@ It is your exercise to extract the shellcode second stage of this loader.
 
 ## Runtime API Lookups
 
-Instead of listing required API functions as an imported symbol, the malware can use the `LoadLibrary` and `GetProcAddress` API calls to load DLLs into memory and retrieve the addresses of required functions at runtime. The malware may even go one step further and implement a variant of `GetProcAddress` which uses hashes instead of function names; this is referred to as _API hashing_. Finally, the malware may even go _another step futher_ and avoid using `LoadLibrary` by parsing the PE header of DLLs which are already present in memory. In practice, the following observation helps to identify when shenanigans like this are taking place. If the variable `ptr` points to the beginning of a DLL, then
+Instead of listing required API functions as an imported symbol, the malware can use the `LoadLibrary` and `GetProcAddress` API calls to load DLLs into memory and retrieve the addresses of required functions at runtime. The malware may even go one step further and implement a variant of `GetProcAddress` which uses hashes instead of function names; this is referred to as _API hashing_. Finally, the malware may even go _another step futher_ and avoid using `LoadLibrary` and `GetProcAddress` by parsing the PE header of DLLs which are already present in memory. In practice, the following observation helps to identify when shenanigans like this are taking place. If the variable `ptr` points to the beginning of a DLL, then
 ```
 (ptr + *(int *)(ptr + *(int *)(ptr + 0x3c) + 0x78))
 ```
@@ -495,7 +495,7 @@ The following is a short flowchart summary of what we learned:
 
 # Ghidra Scripting
 
-There comes a day in the life of every reverse engineer when they wish they could automate something. Luckily, you can. Im Ghidra, you automate things by writing Ghidra scripts. We recommend that you write them in Java, because Ghidra Scripting integrates with the Eclipse IDE. Having an IDE is so much better than not having an IDE, especially when you are facing a true blood Java API. It gives you auto-completion and inline documentation. Look, this is no time for false pride. Just use Java.
+There comes a day in the life of every reverse engineer when they wish they could automate something. Luckily, you can. In Ghidra, you automate things by writing Ghidra scripts. We recommend that you write them in Java, because Ghidra Scripting integrates with the Eclipse IDE. Having an IDE is so much better than not having an IDE, especially when you are facing a true blood Java API. It gives you auto-completion and inline documentation. Look, this is no time for false pride. Just use Java.
 
 For this section, recall the sample with SHA-256 hash
 ```
@@ -633,6 +633,81 @@ createData(stringAddr, new ArrayDataType(CharDataType.dataType, size, 1));
 createBookmark(stringAddr, "DeobfuscatedString", new String(buffer));
 ```
 The last three flat API calls remove all data type definitions from the memory range where the deobfuscated string has been written, and then we define a `char` array of the correct length in that spot. Finally, a bookmark is added to have a convenient overview of all deobfuscated strings.
+
+# YARA
+> TODO: YARA Interlude
+
+# Programs Not Written in C
+## Object Oriented Code
+## C++ Standard Library Data Types
+## Example: Delphi
+
+# Identifying Data Structures
+
+# API Hashing
+
+We already saw that bottom up analysis can be extremely powerful to reach analysis goals quickly. One of the stronger entry points for a bottom up analysis are API imports, and we also mentioned in the Obstacles section that it is a common obfuscation technique to obscure these imports by resolving them at runtime. In its most simple form, this is done via the `LoadLibrary` and `GetProcAddress` API calls. However, `GetProcAddress` requires the malware author to pass the name of the imported function as the second argument: This is not much of an obstacle for you. One obvious choice for our adversary would be the use of string obfuscation to hide the name of this import, but in many cases they use a technique called API hashing instead: In a nutshell, it allows you to resolve imports without providing their name as a string. Instead, only a _hash_ of their name is used. 
+
+We are not completely sure about the main reasons for API hashing in executables. Using string obfuscation to obscure the names does not appear to have any obvious drawbacks. However, API hashing has certain advantages in shellcode. Regardless of the reasons, it happens, and you should be able to deal with it. For this section, we analyze the REvil ransomware sample with the following SHA-256 hash:
+```
+5f56d5748940e4039053f85978074bde16d64bd5ba97f6f0026ba8172cb29e93
+```
+Before the first API call is made, the dynamic API resolution has to happen. Consequently, it will happen quite early in the control flow starting at the entry point. API hashing will always involve PE header parsing. In principle, API hashing works as follows:
+
+- Use pointer acrobatics to get a pointer to the `IMAGE_EXPORT_DIRECTORY` of the DLL which has the function you are looking for.
+- Iterate the `AddressOfNames` array in the export directory and compute the hash of each function name.
+- If the computed hash matches a given target hash, pick the corresponding function pointer from the `AddressOfFunctions` array.
+- Note that the function pointer is `AddressOfFunctions[k]` where `k = AddressOfNameOrdinals[j]` and `j` is the index in `AddressOfNames`. Look, we did not come up with this format.
+
+A pseudocode description of this process is the following:
+```c++
+IMAGE_EXPORT_DIRECTORY *Exports = DLLBaseAddress + *(DLLBaseAddress + *(DLLBaseAddress + 0x3C) + 0x78)
+WORD *AddressOfNameOrdinals = Exports->AddressOfNameOrdinals;
+CHAR **AddressOfNames = Exports->AddressOfNames;
+DWORD *AddressOfFunctions = Exports->AddressOfFunctions;
+UINT NumberOfNames = Exports->NumberOfNames;
+
+for (UINT k = 0; k < NumberOfNames; k++) {
+    ComputedHash = ComputeHash(DLLBaseAddress + (DLLBaseAddress + AddressOfNames)[k]);
+    if (ComputedHash == RequestedHash) {
+        WORD Ordinal = (DLLBaseAddress + AddressOfNameOrdinals)[k];
+        return (DLLBaseAddress + AddressOfFunctions)[Ordinal]
+    }
+}
+```
+Your next task will be to reverse engineer the `ComputeHash` function and re-implement it in the language of your choice (which is Python). Then, you compute this hash for all (common) Windows API function names to create a lookup table. Finally, you use this knowledge to fix the executable. Usually, this means writing a Ghidra script that labels memory locations with the name of the API function whose pointer will be stored there after dynamic resolution.
+
+The following Python script can be used to collect API names from a Windows machine:
+```python
+#!/usr/bin/env python3
+import sys
+import pefile
+import glob
+import json
+
+for arg in sys.argv[1:]:
+    for file_name in glob.glob(arg, recursive=True):
+        try:
+            pe = pefile.PE(name=file_name)
+        except pefile.PEFormatError:
+            continue
+        if not hasattr(pe, 'DIRECTORY_ENTRY_EXPORT'):
+            continue
+        export = pe.DIRECTORY_ENTRY_EXPORT
+        dll_name = pe.get_string_at_rva(export.struct.Name)
+        if not dll_name:
+            continue
+        if not export.symbols:
+            continue
+        for pe_export in export.symbols:
+            if not pe_export.name:
+                continue
+            function_name = pe_export.name.decode('utf8')
+            if not function_name.isidentifier():
+                continue
+            print(json.dumps(dict(dll=dll_name.decode('utf8'), name=function_name)))
+```
+
 
 
 
@@ -822,5 +897,6 @@ dumping irgendwann einfach attachen
 [wxHexEditor]: https://www.wxhexeditor.org/
 [InviZzzible]: https://github.com/CheckPointSW/InviZzzible
 [pafish]: https://github.com/a0rtega/pafish
+[YARA-HOWTO]: https://yara.readthedocs.io/en/stable/writingrules.html
 
 [DownRageStrings]: ../scripts/java/DownRageStrings.java
