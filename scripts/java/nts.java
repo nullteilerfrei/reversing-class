@@ -21,11 +21,13 @@ public class nts extends GhidraScript {
 		}
 	}
 
+	byte NOP = (byte) 0x90;
+
 	private void nopOut(Address addressStart, long length) throws CancelledException, MemoryAccessException {
 		clearListing(addressStart, addressStart.add(length));
 		for (int i = 0; i < length; i++) {
 			Address address = addressStart.add(i);
-			setByte(address, (byte) 0x90);
+			setByte(address, NOP);
 		}
 
 		disassemble(addressStart);
