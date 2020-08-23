@@ -637,13 +637,6 @@ The last three flat API calls remove all data type definitions from the memory r
 # YARA
 > TODO: YARA Interlude
 
-# Programs Not Written in C
-## Object Oriented Code
-## C++ Standard Library Data Types
-## Example: Delphi
-
-# Identifying Data Structures
-
 # API Hashing
 
 We already saw that bottom up analysis can be extremely powerful to reach analysis goals quickly. One of the stronger entry points for a bottom up analysis are API imports, and we also mentioned in the Obstacles section that it is a common obfuscation technique to obscure these imports by resolving them at runtime. In its most simple form, this is done via the `LoadLibrary` and `GetProcAddress` API calls. However, `GetProcAddress` requires the malware author to pass the name of the imported function as the second argument: This is not much of an obstacle for you. One obvious choice for our adversary would be the use of string obfuscation to hide the name of this import, but in many cases they use a technique called API hashing instead: In a nutshell, it allows you to resolve imports without providing their name as a string. Instead, only a _hash_ of their name is used. 
@@ -708,7 +701,58 @@ for arg in sys.argv[1:]:
             print(json.dumps(dict(dll=dll_name.decode('utf8'), name=function_name)))
 ```
 
+# x86 Programs Not Written in C
 
+The decompiled code in Ghidra and also in HexRays is very similar to C and it should be no surprise that the best results are achieved when the source program was written in C. However, unfortunately, not all malware is written in C. Some popular examples of what you may encounter are C++, Delphi, Visual Basic, and Go. High level features of these languages (like object orientation) will look a little awkward in Ghidra and there is no catch-all solution to this problem. In the worst case, you will have to understand precisely how the language concepts translate to low level data structures, and in the best case you can use Ghidra scripts and other tooling that has already been developed by some poor soul who went through the worst case first.
+
+Some of these problems already have reasonable solutions and we will discuss the most relevant ones next.
+
+## C++ Object Oriented Code
+
+To reverse engineer C++ code, the only challenge on top of what you have to face for C code is the object oriented part. Luckily, the low level implementation of C++ classes is fairly simple in principle and can be represented reasonably well with C structures and function pointers. For the examples in this section, we use the sample with SHA-256 hash
+```
+167e5d4485a57ba84504d0c62cf8e9481d39c1e59cca0a4f90b3f3c607ae3a4e
+```
+which is a Warzone sample. A C++ class will be stored in memory as a struct containing its member variables. Any method of this class will appear in decompiled code as a function that receives a pointer to that data structure as its first argument. This first argument is usually referred to as `this` and the calling convention `__thiscall` is used for class methods. For example, the following is Ghidra's naive interpretation of a class constructor:
+```c++
+undefined4 __thiscall FUN_0040ef3c(void *this)
+
+{
+  undefined4 extraout_EDX;
+  *(undefined4 *)this = 0;
+  *(undefined4 *)((int)this + 4) = 0;
+  *(undefined4 *)((int)this + 0x10) = 0;
+  *(undefined4 *)((int)this + 0x14) = 0;
+  *(undefined4 *)((int)this + 0x18) = 0;
+  *(undefined4 *)((int)this + 0x1c) = 0;
+  *(undefined4 *)((int)this + 0x20) = 0;
+  FUN_00405647((undefined4 *)((int)this + 0x30));
+  return extraout_EDX;
+}
+```
+The first 9 variables are initialized to zero. The object also has a member variable at offset `0x30` which is also a class instance whose constructor has to be invoked. This becomes slightly more convoluted when the class implements a virtual method, in which case the first variable in its representing data structure will be a pointer to _another_ structure which is called the _virtual function table_ and which contains a few function pointers. A constructor for a class instance with a virtual function table looks as follows:
+```c++
+undefined4 * __thiscall FUN_00404650(void *this,undefined4 param_1)
+{
+  *(undefined4 *)((int)this + 4) = param_1;
+  *(undefined4 *)this = 0x412604;
+  return (undefined4 *)this;
+}
+```
+When inspecting the memory at offset `0x412604`, we can see that it contains the function pointers that constitute the virtual function table for this object:
+```
+  PTR_LAB_00412604
+  00412604      addr     LAB_00401cf8
+  00412608      addr     FUN_00404601
+```
+Notably, both of these are functions, but Ghidra has only realized it for the second one at offset `0x00404601`. The code at offset `0x00401cf8` on the other hand has not been turned into a function. This likely happened because neither of the functions is ever called _directly_, i.e. there is no call to the hard-coded offset in the binary. Ghidra was able to identify one of these as a function through different (and unknown) methods, but had no reason to deduce that the other one was. It is very common for methods in a virtual function table to never be called directly: They are usually called only _indirectly_, i.e. you will eventually find a call to the function pointer from the virtual function table of a class instance.
+
+
+
+## C++ Standard Library Data Types
+## Example: Delphi
+
+# Identifying Data Structures
 
 
 # Dynamic Analysis
