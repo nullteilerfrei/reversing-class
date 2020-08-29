@@ -12,15 +12,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ghidra.app.script.GhidraScript;
 import ghidra.program.model.address.*;
 import ghidra.util.exception.InvalidInputException;
 
-public class REvilAPIHashLabeller extends GhidraScript {
-
-	private void logMsg(String message, Object... args){
-		this.println(String.format(message, args));
-	}
+public class REvilAPIHashLabeller extends MalREGhidraScript {
 	
 	public void run() throws Exception {
 		List<String> hashDescriptions;
