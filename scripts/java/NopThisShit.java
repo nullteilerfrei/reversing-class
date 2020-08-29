@@ -1,6 +1,6 @@
 //Noop This Shit - replaces current selection with 0x90 (NOP) instructions
 //@author larsborn
-//@category Helper
+//@category malRE
 //@keybinding Ctrl-Alt-Shift-N
 //@menupath 
 //@toolbar 
@@ -11,7 +11,7 @@ import ghidra.program.model.listing.Instruction;
 import ghidra.program.model.mem.MemoryAccessException;
 import ghidra.util.exception.CancelledException;
 
-public class nts extends GhidraScript {
+public class NopThisShit extends GhidraScript {
 	public void run() throws Exception {
 		if (currentSelection != null) {
 			AddressRangeIterator addressRanges = currentSelection.getAddressRanges(true);

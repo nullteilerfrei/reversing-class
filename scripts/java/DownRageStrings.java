@@ -1,6 +1,6 @@
 //Deobfuscate the strings in 2396c9dac2184405f7d1f127bec88e56391e4315d4d2e5b951c795fdc1982d59
 //@author malRE
-//@category Strings
+//@category malRE
 
 import java.io.IOException;
 import java.util.Iterator;

@@ -1,6 +1,6 @@
 //Deobfuscates Strings in Hamweq sample 4eb33ce768def8f7db79ef935aabf1c712f78974237e96889e1be3ced0d7e619
 //@author larsborn
-//@category Strings
+//@category malRE
 //@keybinding 
 //@menupath 
 //@toolbar 

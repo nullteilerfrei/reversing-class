@@ -1,6 +1,6 @@
 //Labels up API hashes in REvil Samples
 //@author mal.re
-//@category Imports
+//@category malRE
 
 import java.io.File;
 import java.io.IOException;

@@ -1,7 +1,7 @@
 // Deobfuscate the strings in the Sodinokibi/REvil sample 
 // 5f56d5748940e4039053f85978074bde16d64bd5ba97f6f0026ba8172cb29e93
 //@author larsborn 
-//@category Strings
+//@category malRE
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 //Clear This Shit - Clears data of given size starting at the cursor
 //@author @larsborn
-//@category Helper
+//@category malRE
 //@keybinding 
 //@menupath 
 //@toolbar 
@@ -8,7 +8,7 @@
 import ghidra.app.script.GhidraScript;
 import ghidra.program.model.address.*;
 
-public class cts extends GhidraScript {
+public class ClearThisShit extends GhidraScript {
 
 	public void run() throws Exception {
 		int clearSize = askInt("Enter Size",

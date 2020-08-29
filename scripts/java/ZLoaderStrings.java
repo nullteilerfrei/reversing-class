@@ -1,7 +1,7 @@
 // Deobfuscate the strings in the ZLoader sample 
 // 4029f9fcba1c53d86f2c59f07d5657930bd5ee64cca4c5929cbd3142484e815a
 //@author larsborn 
-//@category Strings
+//@category malRE
 
 import java.io.IOException;
 import java.util.ArrayList;

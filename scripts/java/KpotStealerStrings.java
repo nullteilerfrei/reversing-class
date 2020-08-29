@@ -1,7 +1,7 @@
 // Deobfuscate the strings in the KpotStealer sample 
 // 67f8302a2fd28d15f62d6d20d748bfe350334e5353cbdef112bd1f8231b5599d
 //@author larsborn 
-//@category Strings
+//@category malRE
 
 import java.io.IOException;
 import java.util.ArrayList;

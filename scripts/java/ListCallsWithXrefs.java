@@ -1,6 +1,6 @@
 // List all functions called in the current function together with their number of references 
 //@author larsborn 
-//@category Strings
+//@category malRE
 
 import java.util.ArrayList;
 import java.util.Collections;
