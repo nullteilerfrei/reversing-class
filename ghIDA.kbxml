@@ -139,6 +139,10 @@
         <STATE NAME="KeyCode" TYPE="int" VALUE="67" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
     </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Show References To Address (Shared)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="88" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="65" />
+    </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Edit Comments (CommentsPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="59" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
@@ -222,6 +226,10 @@
     <WRAPPED_OPTION NAME="Set Highlight From Selection (SetHighlightPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="72" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="NopThisShit.java (GhidraScriptMgrPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="78" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="195" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Expand All (DataTypeManagerPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="40" />
@@ -723,8 +731,8 @@
         <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Find References To (Shared)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="70" />
-        <STATE NAME="Modifiers" TYPE="int" VALUE="195" />
+        <STATE NAME="KeyCode" TYPE="int" VALUE="88" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Delete Function (FunctionPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="127" />
