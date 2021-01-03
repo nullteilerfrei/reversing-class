@@ -514,6 +514,10 @@
         <STATE NAME="KeyCode" TYPE="int" VALUE="85" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Defined Strings (Shared)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="123" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="65" />
+    </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Go To Last Active Program (MultiTabPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="117" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
