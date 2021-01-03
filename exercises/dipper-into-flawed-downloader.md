@@ -19,3 +19,8 @@ Your task, should you choose to accept it, is to unpack and analyze a complex cr
    25e9af3dd5f04e33b54f562cf6db864e0406e3752c2283d0c4ff6907038da3e2
    ```
    Determine the purpose of this payload and extract any relevant host and network indicators (C2 addresses, file names, cryptographic secrets).
+
+Bonus Exercise (0 Points): Write a Ghidra script which allows you to:
+
+1. Select lines of code in the listing view and replace all selected instructions by an appropriate number of `NOP` instructions.
+2. The same, but allow selection of lines in the decompiler window.
