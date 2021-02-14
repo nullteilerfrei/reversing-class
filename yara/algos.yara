@@ -153,10 +153,52 @@ rule salsa20
     meta:
         description = "Salsa20 stream cipher initial value"
         author = "@larsborn"
-        data = "2020-08-23"
+        date = "2020-08-23"
         reference = "https://en.wikipedia.org/wiki/Salsa20"
     strings:
         $ = "expand 32-byte k"
+    condition:
+        all of them
+}
+
+rule rand
+{
+    meta:
+        description = "Constant from rand() implementation"
+        author = "@larsborn"
+        date = "2020-12-13"
+        reference = "https://en.wikipedia.org/wiki/Linear_congruential_generator"
+    strings:
+        $lcg_a = { fd 43 03 00 }
+        $lcg_c = { c3 9e 26 00 }
+        $lcg_mod = { ff 7f 00 00 }
+    condition:
+        all of them    
+}
+
+rule murmur
+{
+    meta:
+        description = "Constants from MurmurHash2"
+        author = "@larsborn"
+        date = "2021-01-01"
+        reference = "https://github.com/abrandoned/murmur2/blob/master/MurmurHash2.c"
+    strings:
+        $ = { 95 e9 d1 5b }
+    condition:
+        all of them
+}
+
+rule briflz
+{
+    meta:
+        description = "BriefLZ - small fast Lempel-Ziv"
+        author = "@larsborn"
+        date = "2021-01-03"
+        reference = "https://github.com/jibsen/brieflz"
+        hash = "f88671a5c98df6ef5ba81cd6a9340673163742050ca08eda64c91f25138efce9"
+    strings:
+        $name = { 31 7a 6c 62 }
     condition:
         all of them
 }
