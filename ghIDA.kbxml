@@ -9,8 +9,7 @@
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Export Program (ExporterPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="79" />
-        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+        <CLEARED_VALUE />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Cut (DataTypeManagerPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="88" />
@@ -92,8 +91,8 @@
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Retype Return (DecompilePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="76" />
-        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
+        <STATE NAME="KeyCode" TYPE="int" VALUE="89" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Copy (DataTypeManagerPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="67" />
@@ -514,6 +513,10 @@
         <STATE NAME="KeyCode" TYPE="int" VALUE="85" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Defined Strings (Shared)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="123" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="65" />
+    </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Go To Last Active Program (MultiTabPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="117" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
@@ -611,8 +614,8 @@
         <STATE NAME="Modifiers" TYPE="int" VALUE="650" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Retype Field (DecompilePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="76" />
-        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
+        <STATE NAME="KeyCode" TYPE="int" VALUE="89" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Editor: Insert Undefined Byte (Shared)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="85" />
@@ -671,8 +674,8 @@
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Retype Global (DecompilePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="76" />
-        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
+        <STATE NAME="KeyCode" TYPE="int" VALUE="89" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Paste Symbols (SymbolTreePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="86" />

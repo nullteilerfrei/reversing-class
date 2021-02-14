@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CATEGORY NAME="Key Bindings">
+    <WRAPPED_OPTION NAME="Export Program (ExporterPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="79" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Paste (FrontEndPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="86" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Exit Ghidra (Tool)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="81" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Cut (FrontEndPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="88" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Create Tool (FrontEndPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="84" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Table Data Copy (Shared)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="67" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Open File (FrontEndPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="10" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="New Project (FrontEndPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="78" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Open Project (FrontEndPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="79" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Copy (FrontEndPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="67" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Refresh (FrontEndPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="116" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Save Project (FrontEndPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="83" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Extract and Import (ImporterPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="73" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="650" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Close Project (FrontEndPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="87" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="New Folder (FrontEndPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="78" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="195" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Import File (ImporterPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="73" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Table Select All (Shared)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="65" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Clear Cut (FrontEndPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="27" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Delete (FrontEndPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="127" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Rename (FrontEndPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="113" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Table Data Copy Current Column (Shared)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="67" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="195" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Open File System (FileSystemBrowserPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="73" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
+    </WRAPPED_OPTION>
+</CATEGORY>
+
