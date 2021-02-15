@@ -202,3 +202,60 @@ rule briflz
     condition:
         all of them
 }
+
+rule rabbit 
+{
+    meta:
+        description = "Rabbit - stream cipher submitted to the eSTREAM project in 2005"
+        author = "@larsborn"
+        date = "2021-02-14"
+        reference = "https://de.wikipedia.org/wiki/Rabbit_(Algorithmus)"
+        hash = "36d60d54ace6386a5c64f4f9cbf818ae1e9f38352ea6fbd216a87ad1350228ac"
+    strings:
+        $counter_init_value_1 = { 4d d3 34 4d }
+        $counter_init_value_2 = { 34 4d d3 34 }
+    condition:
+        all of them
+}
+
+rule sha256
+{
+    meta:
+        description = "SHA256 - Cryptographic hash function belonging to the SHA-2 family"
+        author = "@larsborn"
+        date = "2021-02-14"
+        reference = "https://en.wikipedia.org/wiki/SHA-2"
+        hash = "36d60d54ace6386a5c64f4f9cbf818ae1e9f38352ea6fbd216a87ad1350228ac"
+    strings:
+        $init_hash_value_1 = { 67 e6 09 6a }
+        $init_hash_value_2 = { 85 ae 67 bb }
+        $init_hash_value_3 = { 72 f3 6e 3c }
+        $init_hash_value_4 = { 3a f5 4f a5 }
+        $init_hash_value_5 = { 7f 52 0e 51 }
+        $init_hash_value_6 = { 8c 68 05 9b }
+        $init_hash_value_7 = { ab d9 83 1f }
+        $init_hash_value_8 = { 19 cd e0 5b }
+    condition:
+        all of ($init_hash_value_*)
+}
+
+rule sha384
+{
+    meta:
+        description = "SHA256 - Cryptographic hash function belonging to the SHA-2 family"
+        author = "@larsborn"
+        date = "2021-02-14"
+        reference = "https://en.wikipedia.org/wiki/SHA-2"
+        hash = "36d60d54ace6386a5c64f4f9cbf818ae1e9f38352ea6fbd216a87ad1350228ac"
+    strings:
+        $init_hash_value_1 = { d8 9e 05 c1 }
+        $init_hash_value_2 = { 07 d5 7c 36 }
+        $init_hash_value_3 = { 17 dd 70 30 }
+        $init_hash_value_4 = { 39 59 0e f7 }
+        $init_hash_value_5 = { 31 0b c0 ff }
+        $init_hash_value_6 = { 11 15 58 68 }
+        $init_hash_value_7 = { a7 8f f9 64 }
+        $init_hash_value_8 = { a4 4f fa be }
+    condition:
+        all of ($init_hash_value_*)
+}
