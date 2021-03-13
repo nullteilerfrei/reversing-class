@@ -426,7 +426,7 @@
         <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Editor: Clear Components (Shared)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="67" />
+        <STATE NAME="KeyCode" TYPE="int" VALUE="85" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Go To Next Function (CodeBrowserPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
