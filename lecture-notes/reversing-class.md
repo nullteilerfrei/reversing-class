@@ -668,38 +668,9 @@ for (UINT k = 0; k < NumberOfNames; k++) {
     }
 }
 ```
-Your next task will be to reverse engineer the `ComputeHash` function and re-implement it in the language of your choice (which is Python). Then, you compute this hash for all (common) Windows API function names to create a lookup table. Finally, you use this knowledge to fix the executable. Usually, this means writing a Ghidra script that labels memory locations with the name of the API function whose pointer will be stored there after dynamic resolution.
+Your next task will be to reverse engineer the `ComputeHash` function and re-implement it in the language of your choice (which is Python). Then, you compute this hash for all (common) Windows API function names to create a lookup table. Finally, you use this knowledge to fix the executable. Usually, this means writing a Ghidra script that labels memory locations with the name of the API function whose pointer will be stored there after dynamic resolution. 
 
-The following Python script can be used to collect API names from a Windows machine:
-```python
-#!/usr/bin/env python3
-import sys
-import pefile
-import glob
-import json
-
-for arg in sys.argv[1:]:
-    for file_name in glob.glob(arg, recursive=True):
-        try:
-            pe = pefile.PE(name=file_name)
-        except pefile.PEFormatError:
-            continue
-        if not hasattr(pe, 'DIRECTORY_ENTRY_EXPORT'):
-            continue
-        export = pe.DIRECTORY_ENTRY_EXPORT
-        dll_name = pe.get_string_at_rva(export.struct.Name)
-        if not dll_name:
-            continue
-        if not export.symbols:
-            continue
-        for pe_export in export.symbols:
-            if not pe_export.name:
-                continue
-            function_name = pe_export.name.decode('utf8')
-            if not function_name.isidentifier():
-                continue
-            print(json.dumps(dict(dll=dll_name.decode('utf8'), name=function_name)))
-```
+**Fun Fact:** We have [a Python script that can be used to collect API names from a Windows machine][get_pe_exports].
 
 # x86 Programs Not Written in C
 
@@ -941,6 +912,7 @@ dumping irgendwann einfach attachen
 [wxHexEditor]: https://www.wxhexeditor.org/
 [InviZzzible]: https://github.com/CheckPointSW/InviZzzible
 [pafish]: https://github.com/a0rtega/pafish
+[get_pe_exports]: https://raw.githubusercontent.com/nullteilerfrei/reversing-class/master/scripts/python/get_pe_exports.py
 [YARA-HOWTO]: https://yara.readthedocs.io/en/stable/writingrules.html
 
 [DownRageStrings]: ../scripts/java/DownRageStrings.java
