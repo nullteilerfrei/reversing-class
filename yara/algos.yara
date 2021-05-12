@@ -173,7 +173,7 @@ rule rand
         $lcg_c = { c3 9e 26 00 }
         $lcg_mod = { ff 7f 00 00 }
     condition:
-        all of them    
+        all of them
 }
 
 rule murmur
@@ -203,7 +203,7 @@ rule briflz
         all of them
 }
 
-rule rabbit 
+rule rabbit
 {
     meta:
         description = "Rabbit - stream cipher submitted to the eSTREAM project in 2005"
@@ -216,6 +216,21 @@ rule rabbit
         $counter_init_value_2 = { 34 4d d3 34 }
     condition:
         all of them
+}
+
+rule crc32
+{
+    meta:
+        description = "CRC-32 algorithm - constants should be XORed with a state variable which is originally initialized with 0xFFFFFFFF"
+        author = "@larsborn"
+        date = "2021-05-08"
+        reference = "https://en.wikipedia.org/wiki/Cyclic_redundancy_check"
+        hash = "de04d2402154f676f757cf1380671f396f3fc9f7dbb683d9461edd2718c4e09d"
+    strings:
+        $forward_polynomial = { 20 83 b8 ed }
+        $reverse_polynomial = { B7 1D C1 04 }
+    condition:
+        any of them
 }
 
 rule sha256
@@ -258,4 +273,18 @@ rule sha384
         $init_hash_value_8 = { a4 4f fa be }
     condition:
         all of ($init_hash_value_*)
+}
+
+rule deflate
+{
+    meta:
+        description = "Copyright String present in a common implementation of the deflation algorithm"
+        author = "@larsborn"
+        date = "2021-05-12"
+        reference = "https://github.com/GPUOpen-Tools/common_lib_ext_zlib_1.2.8/blob/master/1.2.8/deflate.c"
+        hash = "c748284e7cc2868f38d9fff1bf08eaceb600a16b757e2f700ef8fe93f3ac1791"
+    strings:
+        $copyright_string = "deflate 1.2.8 Copyright 1995-2013 Jean-loup Gailly and Mark Adle"
+    condition:
+        all of them
 }
