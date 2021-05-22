@@ -24,7 +24,7 @@ The course does not cover the following topics:
 
 Furthermore, the binaries analyzed during the course will usually have been compiled with a C/C++ compiler and were not originally written in other languages such as Delphi, GoLang, or VB. We mention these languages in particular because they are popular choices among malware authors.
 
-## Alternatives
+## Alternatives to Ghidra
 
 The industry standard for binary reverse engineering is [IDA][], using the [HexRays Decompiler][]. However, these are not exactly cheap. Before the release of the Ghidra, the only alternatives were [RetDec][] and [Hopper][], but both of these are arguably less powerfull than Ghidra and IDA. Given these considerations, we consider Ghidra the best choice for entry level reverse engineering.
 
@@ -222,6 +222,8 @@ It is possible to write code that does not depend on its position in memory. Thi
 
 Sometimes, certain stages of a malware chain are implemented as shellcode. The main reason for this is to easily execute these stages in memory without touching the disk: The buffer containing the shellcode can be called just like a function. Note that memory in Windows can have read/write/execute permissions, and there are not many other reasons to make a memory region executable. This can happen in a call to `VirtualAlloc` or `VirtualProtect`, for example.
 
+Identification of functions in binary code is a hard problem and decompilers like Ghidra use different techniques and heuristics to try to solve it. Especially when working with shellcode, these solutions sometimes fail and Ghidra doesn't correctly identify functions or even executable code as such. In these cases, you can always right-click in the Listing view and select **Disassemble** to mark memory as code and then right-click and **Create Function** to trigger decompilation.
+
 # Obstacles
 
 ## String Obfuscation
@@ -350,6 +352,113 @@ It is out of scope for this lecture to cover the Windows PE file format exhausti
 - Polymophism
 - Metamophism
 
+# Data Types and Structures
+
+## Data Types
+
+Compilers translate high-level languages, like C, into assembly instructions. There is no concept of data types on the assembly level, just data and instructions. Decompilers analyze the way in which these assembly instructions operate on the data and attempt to heuristically deduce the original data types. Since these types are just guesses, there might sometimes be better choices and it is your sworn duty as a reverse engineer to ever seek those out. For example, the decompiler sometimes defaults to passing arguments as `int` even though they might actually be pointers. For example, you might see the following code:
+```c++
+DWORD __cdecl FUN_00409db0(int param_1,int param_2)
+{
+  char *_Str1;
+  int iVar2;
+
+  if (param_1 == 2) {
+    _Str1 = *(char **)(param_2 + 4);
+    iVar2 = _stricmp(_Str1, "-svc");
+    if (iVar2 == 0) {
+      InterestingStuffHappens();
+    }
+  }
+
+  return 0;
+}
+```
+Notably, the decompiler thought it necessary to cast `param_2 + 4` into a pointer to a pointer to a `char` so that `_Str1` would have the correct type as an argument to the `_stricmp` function. This should really tell you that `param_2` is, in fact, of type `char**`. Changing the type makes the code look much more sensible:
+```c++
+DWORD __cdecl FUN_00409db0(int param_1,char **param_2)
+{
+  char *_Str1;
+  int iVar2;
+
+  if (param_1 == 2) {
+    _Str1 = param_2[1]; 
+    iVar2 = _stricmp(_Str1, "-svc");
+    if (iVar2 == 0) {
+      InterestingStuffHappens();
+    }
+  }
+
+  return 0;
+}
+```
+
+## Structures
+
+This problem becomes significantly more challenging when the best data type is actually an unknown structure. For example, consider the sample with the following SHA-256 hash:
+```
+050f88ce73dbfc7cc3b3fd36357e5da48c61d312be45fec8d64c0c22e61c2673
+```
+Remember? This is the second sample we looked at. At `0x00405810`, there is a call to `0x004040e0` and access to memory around `0x0040b030`. It should look roughly like this in Ghidra: 
+```c++
+uint local_8;
+
+/* ... */
+
+if ((&DAT_0040b030)[local_8 * 2] == NULL) {
+  local_8 = 0;
+}
+s = FUN_004040e0((&DAT_0040b030)[local_8 * 2],*(u_short *)(&DAT_0040b034 + local_8 * 8));
+if ((int)s < 1) {
+  local_8 += 1;
+}
+```
+Notice that there is an array access to the memory at `0x0040b030`, but the index variable is multiplied by two. This indicates that the array actually contains chunks of data where each chunk consists of two machine-word-sized variables, i.e. it is an array of structs. Let's create a structure in Ghidra that has two machine-word-sized fields. To do so, go to **Data Type Manager**, right-click the entry that corresponds to the open sample, **New**, **Structure**. If you are using our keyboard shortcuts, you can also create a new structure by simply pressing the **Insert** key while the **Data Type Manager** has focus.
+
+This should open the **Structure Editor** for a new structure. Add two fields to it, change the name to, say, `c2_t`, and save the structure. After this is done, navigate to `0x0040b030` and change the type of the global variable at this location to, say `c2_t[2]`; we can figure out the correct size of the array later. Beware of Ghidra's data type chooser, which often tries to aggressively suggest false data types. After changing the data type, the code should look more like this:
+```c++
+if (DAT_0040b030[local_8].field_0x0 == 0) {
+  local_8 = 0;
+}
+s = FUN_004040e0((char *)DAT_0040b030[local_8].field_0x0,*(u_short *)&DAT_0040b030[local_8].field_0x4);
+if ((int)s < 1) {
+  local_8 += 1;
+}
+```
+This now tells us that the two fields of the data structure are likely of type `char*` and `u_short` (plus a two-byte alignment padding). You can simply change the type of the fields inside the decompiler window and end up with this:
+```c++
+if (DAT_0040b030[local_8].field_0x0 == NULL) {
+  local_8 = 0;
+}
+s = FUN_004040e0(DAT_0040b030[local_8].field_0x0,DAT_0040b030[local_8].field_0x4);
+if ((int)s < 1) {
+  local_8 += 1;
+}
+```
+After some additional reverse engineering, you will figure out that the first field is a pointer to the C2 server host name, and the second field contains the port number on which to connect. After you are done with this code segment, it could therefore look like this:
+```c++
+if (C2LIST[k].Host == NULL) {
+  k = 0;
+}
+socket = EvConnectC2(C2LIST[k].Host,C2LIST[k].Port);
+if ((int)socket < 1) {
+  k += 1;
+}
+```
+
+## Complex Structures
+
+In general, data types may be more complex, especially including nested structs. And while automatic discovery across an entire binary is a theoretically solved problem, any such implementation still doesn't properly work in practice at the time of writing. To ease creation of larger structures involving lots of fields, Ghidra offers a feature for automatic structure creation which only takes the current function into account: you can right-click any variable and select **Auto Create Structure**. Note that this feature works only on _pointers_ to structures. It likely works by looking up pointer arithmetic followed by dereferencing. As an example, recall the obfuscated loader with the following SHA-256 hash:
+```
+ad320839e01df160c5feb0e89131521719a65ab11c952f33e03d802ecee3f51f
+```
+If you were successful in extracting the second stage shellcode, it should have the following SHA-256 hash:
+```
+ed356e738dea161f113c33be8e418d52a468c6ff67c0fd779096331cd12152d5
+```
+This shellcode starts with a function that accepts a single pointer argument which points to structured data. Using the **Auto Create Structure** feature on this parameter will save you a few clicks. Of course, you still have to rename and retype the fields of this structure to make sense of it.
+
+
 # To Do as Cypher Does
 
 > You get used to it. I…I don’t even see the code. All I see is blonde, brunette, red-head. Hey, you uh… want a drink?
@@ -384,9 +493,9 @@ If you have nothing to hold on to right away, we recommend the following approac
 
 ## Identifying Compression Algorithms
 
-If you are already quite certain from context that the algorithm processes blobs of unintelligible data, i.e. you are convinced that it is decompression or decryption, then the absence of an encryption key is solid evidence that you are dealing, in fact, with a compression algorithm. Note however that an encryption key doesn't always have to be passed as an argument to the function but could also be generated in some other way.
+If you are already quite certain from context that the algorithm processes blobs of unintelligible data, i.e. you are convinced that it is decompression or decryption, then the absence of an encryption key is solid evidence that you are dealing, in fact, with a (de)compression algorithm. Note however that an encryption key doesn't always have to be passed as an argument to the function but could also be generated in some other way.
 
-Another algorithmic indicator for compression algorithms is the presence of pointer arithmetic with negative offsets, i.e. a back reference into already decompressed data. For example, consider the following excerpt from a decompiled APLib decompression routine:
+Another algorithmic indicator for decompression algorithms is the presence of pointer arithmetic with negative offsets, i.e. a back reference into already decompressed data. For example, consider the following excerpt from a decompiled APLib decompression routine:
 ```c++
 if ((local_8 == 0) && (iVar3 == 2)) {
   local_18 = local_10;
@@ -398,7 +507,22 @@ if ((local_8 == 0) && (iVar3 == 2)) {
   }
 }
 ```
-Note particularly the 5th line where `decompressed[-local_18]` is a backwards reference.
+Note particularly the 5th line where `decompressed[-local_18]` is a backwards reference. This happens specifically for LZ-type compression algorithms; note that decompression based on a Huffman tree does not necessarily exhibit this trait.
+
+Contrary to symmetric cryptographic algorithms, where identification for both encryption and decryption routine are fairly similar, the compression routine usually looks very different from the decompression routine. Almost all compression algorithms need to maintain some sort of state during their operation indicated, in some cases, by a large temporary allocation in the decompiled code. Compression ABIs often require their user to allocate this buffer and pass it to the compression routine as a parameter. For example, consider the following (already annotated) code:
+```c++
+  ProbablyCompressionState = (header_t *)malloc(0x9008);
+  InFile = fopen(param_2[1],"rb");
+  OutFile = fopen(param_2[2],"wb");
+  fseek(InFile,0,2);
+  FileSize = ftell(InFile);
+  fseek(InFile,0,0);
+  FileBuffer = (BYTE *)malloc(FileSize);
+  fread(FileBuffer,1,FileSize,InFile);
+  OutputBuffer = (byte *)malloc(FileSize + 400);
+  FileSize = LikelyCompress(FileBuffer,OutputBuffer,FileSize,ProbablyCompressionState);
+  fwrite(OutputBuffer,FileSize,1,OutFile);
+```
 
 ## Identifying Cryptographic Algorithms
 
