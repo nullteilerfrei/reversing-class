@@ -53,16 +53,17 @@ Identification:
 
 Samples:
 
-| Name    | SHA-256 Hash                                                       | Remark           |
-|---------|--------------------------------------------------------------------|------------------|
-| APLIB   | `ed356e738dea161f113c33be8e418d52a468c6ff67c0fd779096331cd12152d5` | Dipper Shellcode |
-| BZ2     | ...                                                                |                  |
-| GZip    | ...                                                                |                  |
-| ZLib    | ...                                                                |                  |
-| LZ4     | `0fe796e1b7db725115a7de7ee8a56540f838305356b5de2f24de0883300e2c23` | DPRK Malz        |
-| LZMA    | ...                                                                |                  |
-| ZIP     | `c0c234444ffcaedd23abb4a56062f08fe032289c5208f26c441c4a674fa118b4` | WannaCry Stage 2 |
-| BriefLZ | `b3be07bc668c5671f2ebbe4204eb76ee6710e03b46dc899bf03bfdf0b5d6dfbf` | ChillyVanilly    |
+| Name    | SHA-256 Hash                                                       | Remark           | Function    |
+|---------|--------------------------------------------------------------------|------------------|-------------|
+| APLIB   | `ed356e738dea161f113c33be8e418d52a468c6ff67c0fd779096331cd12152d5` | Dipper Shellcode |             |
+| BZ2     | ...                                                                |                  |             |
+| GZip    | ...                                                                |                  |             |
+| ZLib    | ...                                                                |                  |             |
+| LZ4     | `0fe796e1b7db725115a7de7ee8a56540f838305356b5de2f24de0883300e2c23` | DPRK Malz        | `180004eb0` |
+| LZMA    | ...                                                                |                  |             |
+| ZIP     | `c0c234444ffcaedd23abb4a56062f08fe032289c5208f26c441c4a674fa118b4` | WannaCry Stage 2 |             |
+| BriefLZ | `b3be07bc668c5671f2ebbe4204eb76ee6710e03b46dc899bf03bfdf0b5d6dfbf` | ChillyVanilly    |             |
+| QuickLZ | ...                                                                |                  |             |
 
 ## Compiler Optimizations
 
