@@ -11,20 +11,19 @@ It is a ransomware sample that uses API hashing. The task of this exercise is to
 2. compute a list of hashes for known API function symbols,
 3. run a Ghidra script (provided below) to fix all obfuscated API calls.
 
-For the second and third part, we offer a few suggested script templates, but if
-you feel sassy, just stop reading here and do everything yourself.
+For the second and third part, we offer a few suggested script templates, but if you feel sassy,
+just stop reading here and do everything yourself.
 
-At the bottom of this exercise is the code of a Ghidra script in Java that can be
-used to label a memory region containing API hashes with the corresponding function
-symbol names. It requires an input file that contains the correctly hashed API
-function names in the following format:
+At the bottom of this exercise is the code of a Ghidra script in Java that can be used to label a
+memory region containing API hashes with the corresponding function symbol names. It requires an
+input file that contains the correctly hashed API function names in the following format:
 ```json
 {"name": "LoadLibraryA", "hash": 849394733}
 {"name": "LoadLibraryW", "hash": 3980733}
 {"name": "DisableFirewallAndExecutePowerShellAsAdminW", "hash": 299239333}
 ```
-In other words, each line is a JSON object with a `name` field set to the name of
-the function and the `hash` field set to the value of the corresponding API hash.
+In other words, each line is a JSON object with a `name` field set to the name of the function and
+the `hash` field set to the value of the corresponding API hash.
 
 To help generate such a file, we provide:
 - [a script for extracting exported function symbols from Windows DLLs][dlls-crawler],
