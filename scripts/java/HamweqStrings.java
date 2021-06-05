@@ -39,7 +39,7 @@ public class HamweqStrings extends GhidraScript {
 		return slice;
 	}
 
-	private byte[] readUntilZeroByte(byte[] data) throws Exception {
+	private byte[] readStringUntilZeroByte(byte[] data) throws Exception {
 		int ZeroPos = -1;
 		for (int i = 0; i < data.length; i++) {
 			if (data[i] == '\0') {
@@ -76,7 +76,7 @@ public class HamweqStrings extends GhidraScript {
 			if (data == null) {
 				break;
 			}
-			byte cypherText[] = readUntilZeroByte(data);
+			byte cypherText[] = readStringUntilZeroByte(data);
 			byte plainText[] = cryptXorAndInvert(cypherText, key);
 			println(String.format("0x%08X %s", stringAddress.getOffset(), new String(plainText)));
 
