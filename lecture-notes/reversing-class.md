@@ -382,7 +382,7 @@ DWORD __cdecl FUN_00409db0(int param_1,char **param_2)
   int iVar2;
 
   if (param_1 == 2) {
-    _Str1 = param_2[1]; 
+    _Str1 = param_2[1];
     iVar2 = _stricmp(_Str1, "-svc");
     if (iVar2 == 0) {
       InterestingStuffHappens();
@@ -399,7 +399,7 @@ This problem becomes significantly more challenging when the best data type is a
 ```
 050f88ce73dbfc7cc3b3fd36357e5da48c61d312be45fec8d64c0c22e61c2673
 ```
-Remember? This is the second sample we looked at. At `0x00405810`, there is a call to `0x004040e0` and access to memory around `0x0040b030`. It should look roughly like this in Ghidra: 
+Remember? This is the second sample we looked at. At `0x00405810`, there is a call to `0x004040e0` and access to memory around `0x0040b030`. It should look roughly like this in Ghidra:
 ```c++
 uint local_8;
 
@@ -528,7 +528,7 @@ Contrary to symmetric cryptographic algorithms, where identification for both en
 
 If you can identify something that looks like an encryption key, you should lean towards identifying the routine as cryptographic. For example, this is the case if two buffers are passed to the function, one with a lot of data, and one with way less. As noted above, keys may also be hard-coded or generated inside what is indeed a decryption routine.
 
-Now if we are operating under the assumption that the code is cryptographic in nature, there's a chance that you are dealing with assymetric ciphers such as RSA or ECC. In that case you'll have to do some learning, because we won't cover it here. More frequent are symmetric _block_ and _stream_ ciphers. We are trying to give a practical guide here, so bear with us - none of what we explain is theoretically complete or even sound. But it will work. 
+Now if we are operating under the assumption that the code is cryptographic in nature, there's a chance that you are dealing with assymetric ciphers such as RSA or ECC. In that case you'll have to do some learning, because we won't cover it here. More frequent are symmetric _block_ and _stream_ ciphers. We are trying to give a practical guide here, so bear with us - none of what we explain is theoretically complete or even sound. But it will work.
 
 ## Block Cipher Identification
 
@@ -763,7 +763,7 @@ The last three flat API calls remove all data type definitions from the memory r
 
 # API Hashing
 
-We already saw that bottom up analysis can be extremely powerful to reach analysis goals quickly. One of the stronger entry points for a bottom up analysis are API imports, and we also mentioned in the Obstacles section that it is a common obfuscation technique to obscure these imports by resolving them at runtime. In its most simple form, this is done via the `LoadLibrary` and `GetProcAddress` API calls. However, `GetProcAddress` requires the malware author to pass the name of the imported function as the second argument: This is not much of an obstacle for you. One obvious choice for our adversary would be the use of string obfuscation to hide the name of this import, but in many cases they use a technique called API hashing instead: In a nutshell, it allows you to resolve imports without providing their name as a string. Instead, only a _hash_ of their name is used. 
+We already saw that bottom up analysis can be extremely powerful to reach analysis goals quickly. One of the stronger entry points for a bottom up analysis are API imports, and we also mentioned in the Obstacles section that it is a common obfuscation technique to obscure these imports by resolving them at runtime. In its most simple form, this is done via the `LoadLibrary` and `GetProcAddress` API calls. However, `GetProcAddress` requires the malware author to pass the name of the imported function as the second argument: This is not much of an obstacle for you. One obvious choice for our adversary would be the use of string obfuscation to hide the name of this import, but in many cases they use a technique called API hashing instead: In a nutshell, it allows you to resolve imports without providing their name as a string. Instead, only a _hash_ of their name is used.
 
 We are not completely sure about the main reasons for API hashing in executables. Using string obfuscation to obscure the names does not appear to have any obvious drawbacks. However, API hashing has certain advantages in shellcode. Regardless of the reasons, it happens, and you should be able to deal with it. For this section, we analyze the REvil ransomware sample with the following SHA-256 hash:
 ```
@@ -792,7 +792,7 @@ for (UINT k = 0; k < NumberOfNames; k++) {
     }
 }
 ```
-Your next task will be to reverse engineer the `ComputeHash` function and re-implement it in the language of your choice (which is Python). Then, you compute this hash for all (common) Windows API function names to create a lookup table. Finally, you use this knowledge to fix the executable. Usually, this means writing a Ghidra script that labels memory locations with the name of the API function whose pointer will be stored there after dynamic resolution. 
+Your next task will be to reverse engineer the `ComputeHash` function and re-implement it in the language of your choice (which is Python). Then, you compute this hash for all (common) Windows API function names to create a lookup table. Finally, you use this knowledge to fix the executable. Usually, this means writing a Ghidra script that labels memory locations with the name of the API function whose pointer will be stored there after dynamic resolution.
 
 **Fun Fact:** We have [a Python script that can be used to collect API names from a Windows machine][get_pe_exports].
 
@@ -847,8 +847,6 @@ Notably, both of these are functions, but Ghidra has only realized it for the se
 ## C++ Standard Library Data Types
 ## Example: Delphi
 
-# Identifying Data Structures
-
 
 # Dynamic Analysis
 
@@ -879,13 +877,13 @@ We will ignore VM detection complications for now and discuss those later. Then,
 5. The process might write an executable to disk and launch it. If it's from 2011. Or targeted.
 6. There may be (attempted) network traffic that reveals a potential C2 server.
 
-In some cases, you may already have reached your analysis goals after just watching the sample execute. For example, if your goal was identification and the sample is a piece of ransomware, then googling the ransom note from your VM will get you there. In most cases however, observing the behavior is a first step for you to structure your actual analysis and give you entry points for various bottom-up approaches in static analysis. 
+In some cases, you may already have reached your analysis goals after just watching the sample execute. For example, if your goal was identification and the sample is a piece of ransomware, then googling the ransom note from your VM will get you there. In most cases however, observing the behavior is a first step for you to structure your actual analysis and give you entry points for various bottom-up approaches in static analysis.
 
 > TODO: Example & Exercise
 
 ## Anti-Anti-Analysis
 
-Unfortunately, malware authors are quite aware that people run their product in VMs. Whether it is to vex analysts or delay the response time of the AV vendors they work for, very often malware will change its behavior when it (actively) detects a virtualized environment. Most of the time, this changed behavior is immediate termination. 
+Unfortunately, malware authors are quite aware that people run their product in VMs. Whether it is to vex analysts or delay the response time of the AV vendors they work for, very often malware will change its behavior when it (actively) detects a virtualized environment. Most of the time, this changed behavior is immediate termination.
 
 The malware attempting to circumvent your analysis and you trying to circumvent these attempts is a never-ending arms race. While there is no end-all solution, there are a few easy wins:
 
@@ -968,14 +966,14 @@ GOWLZ:
   - watchdog pattern
   - peid
   - fail at static analysis
-- look at princess locker  
+- look at princess locker
   ```
   2e27f4f50343f6a3bfa83229724a7c7880802dd8386b8702159d665bbb56e0fb
   ```
   - execute and observe with procmon
   - oh shit ransomware
-  - BP: FindFirstFileW 
-  - BP: VirtualAlloc 
+  - BP: FindFirstFileW
+  - BP: VirtualAlloc
   - Dump mapped section that looks like PE
   - Overwrite PE header with packed sample's header
   - fix sections (VirtualAddress → PhysicalAddress, VirtualSize max)
