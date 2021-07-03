@@ -1,6 +1,6 @@
 //Generate a x64dbg Script that labels functions as they are currently labeled in Ghidra (in x64dbg: Alt-S -> Shift-V -> Space)
 //@author @larsborn
-//@category mal.re
+//@category malRE
 //@keybinding 
 //@menupath 
 //@toolbar 
