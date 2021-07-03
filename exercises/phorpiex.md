@@ -8,8 +8,8 @@ Consider the sample with the following SHA-256 hash:
 Hypothetical scenario: A company found this malware on their internet-facing IIS server and needs
 your halp to determine the ramifications of this infection. Help them answer the follow questions:
 
-- What to look for in network logs to determine if the malware succesfully communicated with its
-  command & control (C2) server?  
+- What to look for in network logs to determine if the malware successfully communicated with its
+  command & control (C2) server?
   (Both type of traffic as well as actual C2 domains are interesting here.)
 - Does this malware implement any lateral movement, i.e. could this have spread to the CEO's
   computer?
