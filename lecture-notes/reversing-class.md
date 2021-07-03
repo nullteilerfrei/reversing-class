@@ -16,7 +16,7 @@ One important application of software reverse engineering is the analysis of mal
 
 The course does not cover the following topics:
 
-- Ghidra scripting
+- Headless Ghidra automation
 - Malware that is not Windows malware
 - Any software that is not malware
 - MSIL malware (because it is not compiled (ಠ_ಠ))
