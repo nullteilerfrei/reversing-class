@@ -3,11 +3,18 @@ import json
 import sys
 import argparse as ap
 
-def calc_hash(function_name):
+def calc_hash_5f56d5748940e4039053f85978074bde16d64bd5ba97f6f0026ba8172cb29e93(function_name):
     ret = 0x2b
     for c in function_name:
         ret = ret * 0x10f + ord(c)
     return (ret ^ 0xafb9) & 0x1fffff
+
+
+def calc_hash(function_name):
+    ret = 0x2b
+    for c in function_name:
+        ret = ret * 0x10f + ord(c)
+    return (ret ^ 0x12e9) & 0x1fffff
 
 if __name__ == '__main__':
     argp = ap.ArgumentParser()
