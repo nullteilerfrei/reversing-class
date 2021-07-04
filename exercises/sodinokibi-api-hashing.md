@@ -80,7 +80,7 @@ public class REvilAPIHashLabeller extends GhidraScript {
 
 		Address endOfRange = toAddr(currentAddress.getOffset() + clearSize);
 		clearListing(currentAddress, endOfRange);
-		
+
 		while (currentAddress.compareTo(endOfRange) < 0) {
 			Long hashValue = (long) getInt(currentAddress);
 			if (hashValue < 0)
