@@ -13,6 +13,7 @@ The malware exfiltrates information to an HTTP-based C2 server.
    from her machine. She has retrieved a log of all HTTP requests from her firewall and
    provided you the following list. What data was stolen?
 
+Network Capture:
 ```
 GET /php/loader4/loaderinfo.php?param=xqyww7ghpyB9okwB35I4tb5ZWlYhHysIW9mUDokgHsrz8smHmXmkxkwmD3DHog8rf8BcBfnmTySHiJzIvtsUMWljqR4F3APXBQZT4f0DosHzk6y5AgkCSrzvrdoEIcBh5PIhBWGQ2CToogW7+6GoqFtdHXwkwqPF HTTP/1.1
 User-Agent: Winlogon
