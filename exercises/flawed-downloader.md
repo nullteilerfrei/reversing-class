@@ -14,5 +14,6 @@ and an online sandbox was able to retrieve a next-stage payload with a SHA256 ha
    ```
    25e9af3dd5f04e33b54f562cf6db864e0406e3752c2283d0c4ff6907038da3e2
    ```
-   and determine the algorithm used to decrypt and execute the next-stage payload.
+   and determine the algorithm used to decrypt the next-stage payload as well as corresponding
+   cryptographic material.
 2. Can you identify its malware family without doing a full deep dive?
