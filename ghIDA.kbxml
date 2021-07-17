@@ -102,6 +102,10 @@
         <STATE NAME="KeyCode" TYPE="int" VALUE="59" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
     </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Set Equate (DecompilePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="77" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+    </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Cycle: char,string,unicode (Shared)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="222" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
@@ -225,10 +229,6 @@
     <WRAPPED_OPTION NAME="Set Highlight From Selection (SetHighlightPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="72" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
-    </WRAPPED_OPTION>
-    <WRAPPED_OPTION NAME="NopThisShit.java (GhidraScriptMgrPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="78" />
-        <STATE NAME="Modifiers" TYPE="int" VALUE="195" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Expand All (DataTypeManagerPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="40" />
@@ -562,8 +562,8 @@
         <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Next Selected Range (NextPrevSelectedRangePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="162" />
-        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
+        <STATE NAME="KeyCode" TYPE="int" VALUE="91" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="195" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Set Pre Comment (CommentsPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="155" />
@@ -627,6 +627,10 @@
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Editor: Delete Components (Shared)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="127" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Split Out As New Variable (DecompilePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="45" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Delete Function Variable Comment (Shared)" CLASS="ghidra.framework.options.WrappedKeyStroke">
@@ -710,8 +714,8 @@
         <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Previous Selected Range (NextPrevSelectedRangePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="161" />
-        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
+        <STATE NAME="KeyCode" TYPE="int" VALUE="93" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="195" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Search Text (SearchTextPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="69" />
