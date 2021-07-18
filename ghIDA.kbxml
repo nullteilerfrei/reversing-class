@@ -350,6 +350,10 @@
         <STATE NAME="KeyCode" TYPE="int" VALUE="127" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Convert To Char (DecompilePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="82" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+    </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Create Default Reference (ReferencesPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="82" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="650" />
@@ -386,6 +390,10 @@
         <STATE NAME="KeyCode" TYPE="int" VALUE="127" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Convert To Decimal (DecompilePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="68" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+    </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Create Structure (DataPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="91" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="65" />
@@ -402,7 +410,7 @@
         <CLEARED_VALUE />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Convert To Unsigned Decimal (EquatePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="67" />
+        <STATE NAME="KeyCode" TYPE="int" VALUE="68" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Delete folder/fragment (ProgramTreePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
@@ -763,6 +771,10 @@
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Decompiler (Shared)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="116" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Convert To Hexadecimal (DecompilePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="72" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Clear Parameter Data Type (FunctionPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
