@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CATEGORY NAME="Key Bindings">
     <WRAPPED_OPTION NAME="Source Code Lookup (SourceCodeLookupPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="114" />
-        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+        <CLEARED_VALUE />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Remove Stack Depth Change (FunctionPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="127" />
@@ -80,6 +79,10 @@
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Set Selection From Highlight (SetHighlightPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="119" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+    </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Delete Equate (EquateTablePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="127" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Code Viewer Clone (Listing)" CLASS="ghidra.framework.options.WrappedKeyStroke">
@@ -171,8 +174,8 @@
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Symbol Table (Shared)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="84" />
-        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
+        <STATE NAME="KeyCode" TYPE="int" VALUE="114" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="65" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Add Label (LabelMgrPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="76" />
@@ -219,8 +222,7 @@
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Close File (ProgramManagerPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="87" />
-        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
+        <CLEARED_VALUE />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Next Bookmark (NextPrevCodeUnitPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="66" />
@@ -279,8 +281,8 @@
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Repeat Text Search (SearchTextPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="114" />
-        <STATE NAME="Modifiers" TYPE="int" VALUE="195" />
+        <STATE NAME="KeyCode" TYPE="int" VALUE="84" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Show All History (LabelMgrPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="72" />
@@ -617,6 +619,10 @@
         <STATE NAME="KeyCode" TYPE="int" VALUE="66" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="520" />
     </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Close Window (Shared)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="114" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="520" />
+    </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Open/Close Program View (ProgramDiffPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="67" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="650" />
@@ -658,8 +664,8 @@
         <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Repeat Memory Search (MemSearchPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="114" />
-        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+        <STATE NAME="KeyCode" TYPE="int" VALUE="66" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Next Label (NextPrevCodeUnitPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="76" />
@@ -702,7 +708,7 @@
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Editor: Create Array (Shared)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="91" />
+        <STATE NAME="KeyCode" TYPE="int" VALUE="65" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Next Different Byte Value (NextPrevCodeUnitPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
@@ -726,8 +732,8 @@
         <STATE NAME="Modifiers" TYPE="int" VALUE="195" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Search Text (SearchTextPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="69" />
-        <STATE NAME="Modifiers" TYPE="int" VALUE="195" />
+        <STATE NAME="KeyCode" TYPE="int" VALUE="84" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="520" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Bookmarks (Shared)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="66" />
