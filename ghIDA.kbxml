@@ -166,7 +166,7 @@
         <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Add Bookmark (BookmarkPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="66" />
+        <STATE NAME="KeyCode" TYPE="int" VALUE="120" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Choose Data Type (Shared)" CLASS="ghidra.framework.options.WrappedKeyStroke">
@@ -225,8 +225,7 @@
         <CLEARED_VALUE />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Next Bookmark (NextPrevCodeUnitPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="66" />
-        <STATE NAME="Modifiers" TYPE="int" VALUE="65" />
+        <CLEARED_VALUE />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Set Highlight From Selection (SetHighlightPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="72" />
@@ -596,7 +595,7 @@
         <STATE NAME="Modifiers" TYPE="int" VALUE="715" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Go To Previous Program (MultiTabPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="119" />
+        <STATE NAME="KeyCode" TYPE="int" VALUE="33" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Enable/Disable Byteviewer Editing (ByteViewerPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
@@ -610,10 +609,6 @@
     <WRAPPED_OPTION NAME="Rename Field (DecompilePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="78" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
-    </WRAPPED_OPTION>
-    <WRAPPED_OPTION NAME="Filter Bookmarks (BookmarkPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="66" />
-        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Search Memory (MemSearchPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="66" />
@@ -703,6 +698,10 @@
         <STATE NAME="KeyCode" TYPE="int" VALUE="82" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="195" />
     </WRAPPED_OPTION>
+    <WRAPPED_OPTION NAME="Remove Equate (DecompilePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
+        <STATE NAME="KeyCode" TYPE="int" VALUE="127" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
+    </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Rename Function (FunctionPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="78" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="0" />
@@ -736,8 +735,8 @@
         <STATE NAME="Modifiers" TYPE="int" VALUE="520" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Bookmarks (Shared)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="66" />
-        <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
+        <STATE NAME="KeyCode" TYPE="int" VALUE="120" />
+        <STATE NAME="Modifiers" TYPE="int" VALUE="65" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Convert To Char (EquatePlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
         <STATE NAME="KeyCode" TYPE="int" VALUE="82" />
@@ -748,7 +747,7 @@
         <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Go To Next Program (MultiTabPlugin)" CLASS="ghidra.framework.options.WrappedKeyStroke">
-        <STATE NAME="KeyCode" TYPE="int" VALUE="120" />
+        <STATE NAME="KeyCode" TYPE="int" VALUE="34" />
         <STATE NAME="Modifiers" TYPE="int" VALUE="130" />
     </WRAPPED_OPTION>
     <WRAPPED_OPTION NAME="Find References To (Shared)" CLASS="ghidra.framework.options.WrappedKeyStroke">
