@@ -153,12 +153,14 @@ rule salsa20
     meta:
         description = "Salsa20 stream cipher initial value"
         author = "@larsborn"
+        author = "@huettenhain"
         date = "2020-08-23"
         reference = "https://en.wikipedia.org/wiki/Salsa20"
     strings:
         $ = "expand 32-byte k"
+        $ = "expand 16-byte k"
     condition:
-        all of them
+        any of them
 }
 
 rule rand
@@ -287,4 +289,41 @@ rule deflate
         $copyright_string = "deflate 1.2.8 Copyright 1995-2013 Jean-loup Gailly and Mark Adle"
     condition:
         all of them
+}
+
+rule dinkumware
+{
+    meta:
+        description = "Copyright String present in deflate.c"
+        author = "@larsborn"
+        date = "2021-05-31"
+        reference = "https://github.com/GPUOpen-Tools/common_lib_ext_zlib_1.2.8/blob/master/1.2.8/deflate.c"
+        hash = "0694bdf9f08e4f4a09d13b7b5a68c0148ceb3fcc79442f4db2aa19dd23681afe"
+    strings:
+        $copyright_string = "Copyright (c) 1992-2004 by P.J. Plauger, licensed by Dinkumware, Ltd. ALL RIGHTS RESERVED."
+    condition:
+        all of them
+}
+
+rule lz4
+{
+    meta:
+        description = "MOV of the three numbers 0, 1, 2, 1 to stack positions"
+        author = "@larsborn"
+        date = "2021-07-25"
+        reference = "https://github.com/hungys/go-lz4/blob/master/lz4.c#L1115"
+        hash = "0fe796e1b7db725115a7de7ee8a56540f838305356b5de2f24de0883300e2c23"
+    strings:
+        $ = {
+            c7 44 ?? ?? 00 00 00 00
+            [0-4]
+            c7 44 ?? ?? 01 00 00 00
+            [0-4]
+            c7 44 ?? ?? 02 00 00 00
+            [0-4]
+            c7 44 ?? ?? 01 00 00 00
+        }
+
+	condition:
+		all of them
 }
