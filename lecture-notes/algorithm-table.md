@@ -4,44 +4,49 @@
 
 Identification:
 
-| Name     | Help                                                                                                                                         |
-|----------|----------------------------------------------------------------------------------------------------------------------------------------------|
-| AES      | Identifiable by SBox                                                                                                                         |
-| Blowfish | Identifiable by SBox                                                                                                                         |
-| DES      | Identifiable by SBox                                                                                                                         |
-| ECC      | ...                                                                                                                                          |
-| HC128    | bit mask `0x3FF` occurs with consecutive right rotations by `23`, `10`, and `8` as well as consecutive right rotations by `7`, `18`, and `3` |
-| RC4      | a buffer is initialized with incrementing integer values                                                                                     |
-| RC5      | ...                                                                                                                                          |
-| RSA      | ...                                                                                                                                          |
-| Rabbit   | ...                                                                                                                                          |
-| SALSA20  | string value `expand 32-byte k` occurs                                                                                                       |
-| SEAL3    | constant `0x7FC` occurs with several right shifts by `9`                                                                                     |
-| TEA      | Uses the nothing-up-my-sleeve-number `0x9E3779B9`.                                                                                           |
+| Name               | Help                                                                                                                                         |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| AES                | Identifiable by SBox                                                                                                                         |
+| Blowfish           | Identifiable by SBox                                                                                                                         |
+| DES                | Identifiable by SBox                                                                                                                         |
+| ECC (Curve 225519) | Bigint initialized with 9, constant `0x3ffffed`                                                                                              |
+| HC128              | bit mask `0x3FF` occurs with consecutive right rotations by `23`, `10`, and `8` as well as consecutive right rotations by `7`, `18`, and `3` |
+| RC4                | a buffer is initialized with incrementing integer values                                                                                     |
+| RC5                | ...                                                                                                                                          |
+| RSA                | ...                                                                                                                                          |
+| Rabbit             | ...                                                                                                                                          |
+| SALSA20            | string value `expand 32-byte k` occurs                                                                                                       |
+| SEAL3              | constant `0x7FC` occurs with several right shifts by `9`                                                                                     |
+| TEA                | Uses the nothing-up-my-sleeve-number `0x9E3779B9`.                                                                                           |
 
 Samples:
 
-| Name     | SHA-256 Hash                                                       | Remark                     |
-|----------|--------------------------------------------------------------------|----------------------------|
-| AES      | `ed675db1e7c93526141d40ba969bdc5bbdfd013932aaf1e644c66db66ff008e0` | Might be a PyXie loader    |
-| Blowfish | ...                                                                |                            |
-| DES      | `0b38ca277bbb042d43bd1f17c4e424e167020883526eb2527ba929b2f0990a8f` | Zlob                       |
-| ECC      | `de04d2402154f676f757cf1380671f396f3fc9f7dbb683d9461edd2718c4e09d` | NetWalker                  |
-| HC128    | `e9d2bc32a003fb158e9774cb25f1b6ff81aca9e9b2651eef80753fd64a8233f0` | Maze Packer                |
-| RC4      | `ef6a96bf68ec54d78f4f4cd304acc6718f9dfe398f368bc1e5b127bd746302f2` | REvil                      |
-| RC5      | ...                                                                |                            |
-| RSA      | ...                                                                |                            |
-| Rabbit   | ...                                                                |                            |
-| SALSA20  | `de04d2402154f676f757cf1380671f396f3fc9f7dbb683d9461edd2718c4e09d` | NetWalker                  |
-| SEAL3    | `06df4a5fda733594ce5225118badf6747890ec3a37fe2c59854a54622a809814` | At `00409200`; FlawedAmmyy |
-| TEA      | ...                                                                |                            |
+| Name               | SHA-256 Hash                                                       | Remark                     |
+| ------------------ | ------------------------------------------------------------------ | -------------------------- |
+| AES                | `ed675db1e7c93526141d40ba969bdc5bbdfd013932aaf1e644c66db66ff008e0` | Might be a PyXie loader    |
+| AES                | `12d8bfa1aeb557c146b98f069f3456cc8392863a2f4ad938722cd7ca1a773b39` | At `0040863a`              |
+| Blowfish           | ...                                                                |                            |
+| CRC32              | `12d8bfa1aeb557c146b98f069f3456cc8392863a2f4ad938722cd7ca1a773b39` | At `00407198`              |
+| DES                | `0b38ca277bbb042d43bd1f17c4e424e167020883526eb2527ba929b2f0990a8f` | Zlob                       |
+| ECC                | `de04d2402154f676f757cf1380671f396f3fc9f7dbb683d9461edd2718c4e09d` | NetWalker                  |
+| ECC (Curve 225519) | `12d8bfa1aeb557c146b98f069f3456cc8392863a2f4ad938722cd7ca1a773b39` | At `00406fd0`              |
+| HC128              | `e9d2bc32a003fb158e9774cb25f1b6ff81aca9e9b2651eef80753fd64a8233f0` | Maze Packer                |
+| RC4                | `ef6a96bf68ec54d78f4f4cd304acc6718f9dfe398f368bc1e5b127bd746302f2` | REvil                      |
+| RC5                | ...                                                                |                            |
+| RSA                | ...                                                                |                            |
+| Rabbit             | ...                                                                |                            |
+| SALSA20            | `de04d2402154f676f757cf1380671f396f3fc9f7dbb683d9461edd2718c4e09d` | NetWalker                  |
+| SALSA20            | `12d8bfa1aeb557c146b98f069f3456cc8392863a2f4ad938722cd7ca1a773b39` | At `00408a5a`              |
+| SHA3               | `12d8bfa1aeb557c146b98f069f3456cc8392863a2f4ad938722cd7ca1a773b39` | At `004072de`              |
+| SEAL3              | `06df4a5fda733594ce5225118badf6747890ec3a37fe2c59854a54622a809814` | At `00409200`; FlawedAmmyy |
+| TEA                | `12d8bfa1aeb557c146b98f069f3456cc8392863a2f4ad938722cd7ca1a773b39` | At `00405fc4`;             |
 
 ## Compression
 
 Identification:
 
 | Name    | Help                                                                                                                          |
-|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| ------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | APLIB   | `0x7D00` and `0x500`                                                                                                          |
 | BZ2     | ...                                                                                                                           |
 | GZip    | ...                                                                                                                           |
@@ -54,7 +59,7 @@ Identification:
 Samples:
 
 | Name    | SHA-256 Hash                                                       | Remark           | Function    |
-|---------|--------------------------------------------------------------------|------------------|-------------|
+| ------- | ------------------------------------------------------------------ | ---------------- | ----------- |
 | APLIB   | `ed356e738dea161f113c33be8e418d52a468c6ff67c0fd779096331cd12152d5` | Dipper Shellcode | `000000940` |
 | BZ2     | ...                                                                |                  |             |
 | GZip    | ...                                                                |                  |             |
@@ -68,7 +73,7 @@ Samples:
 ## Compiler Optimizations
 
 | Name                | Help         |
-|---------------------|--------------|
+| ------------------- | ------------ |
 | `strlen`            | `0x7efefeff` |
 | `memset`            | `0x01010101` |
 | inverse square root | `0x5f3759df` |
