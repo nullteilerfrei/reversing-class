@@ -591,7 +591,7 @@ Every now and then, you may come across an algorithm that is not covered by what
 
 1. Reverse engineer the algorithm a little bit.
 2. Formulate an aspect of the algorithm as it might occur in a paper or reference implementation.
-3. Search the internet for various possible formulations.
+3. Search the internet for various possible formulations. At the time of writing, one option is also to study the [list of stream ciphers][StreamCiphers] and the [known compression algorithms][CompressionAlgorithms] on WikiPedia and search for anything that sounds familiar.
 4. If you have not succeeded, go back to step 1 or 2.
 
 In order to be efficient during this process, it is important to scope and perpetually scale your efforts in the first step. We recommend the following escalation protocol:
@@ -1036,5 +1036,7 @@ dumping irgendwann einfach attachen
 [pafish]: https://github.com/a0rtega/pafish
 [get_pe_exports]: https://raw.githubusercontent.com/nullteilerfrei/reversing-class/master/scripts/python/get_pe_exports.py
 [YARA-HOWTO]: https://yara.readthedocs.io/en/stable/writingrules.html
+[StreamCiphers]: https://en.wikipedia.org/wiki/Stream_cipher#Comparison
+[CompressionAlgorithms]: https://en.wikipedia.org/wiki/Data_compression
 
 [DownRageStrings]: ../scripts/java/DownRageStrings.java
