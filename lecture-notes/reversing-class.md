@@ -647,6 +647,53 @@ Now to business. First, open the **Script Manager** view from the **Window** men
 
 You will write a class that inherits from `GhidraScript` and this gives you access to the methods of that class, which are referred to as the _"flat API"_. Those are quite useful because they remove a lot of otherwise necessary boilerplate code.
 
+### Reading & Patching Bytes
+
+Projects:
+- literally: patch bytes script & undo patch bytes
+- nop this shit
+- string deobfuscation by hotkey (*)
+
+### Working With Functions
+
+Todo:
+- Listing Functions
+- Getting Function Arguments
+
+Projects:
+- list all functions with number of calls within current function
+- list all functions with number of calls within program
+- deobfuscate all strings based on string deobfuscation function
+
+### Misc
+
+Todo:
+- reading register values
+- function signature modification
+- creating new data types (and enums)
+- external process invocation
+
+Projects:
+- google selection
+- deobfuscate stack strings
+- yara scanner
+- use binary refinery
+- Dhrake
+- API hashing enums
+- REvil: API hash struct
+
+### User Interfaces
+
+Summarize what was previously shown in examples:
+
+- println
+- monitor
+- askBytes, askInt, ...
+- hexDump
+- comments & bookmarks
+- real UIs (motivational example is missing)
+
+
 ## Finding All Calls
 
 Now, let's get this show on the road for real, though. We will need a reference to the deobfuscation function:
