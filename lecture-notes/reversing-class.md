@@ -528,7 +528,7 @@ Contrary to symmetric cryptographic algorithms, where identification for both en
 
 If you can identify something that looks like an encryption key, you should lean towards identifying the routine as cryptographic. For example, this is the case if two buffers are passed to the function, one with a lot of data, and one with way less. As noted above, keys may also be hard-coded or generated inside what is indeed a decryption routine.
 
-Now if we are operating under the assumption that the code is cryptographic in nature, there's a chance that you are dealing with assymetric ciphers such as RSA or ECC. In that case you'll have to do some learning, because we won't cover it here. More frequent are symmetric _block_ and _stream_ ciphers. We are trying to give a practical guide here, so bear with us - none of what we explain is theoretically complete or even sound. But it will work.
+Now if we are operating under the assumption that the code is cryptographic in nature, there's a chance that you are dealing with asymmetric ciphers such as RSA or ECC. In that case you'll have to do some learning, because we won't cover it here. More frequent are symmetric _block_ and _stream_ ciphers. We are trying to give a practical guide here, so bear with us - none of what we explain is theoretically complete or even sound. But it will work.
 
 ## Block Cipher Identification
 
@@ -620,6 +620,20 @@ The following is a short flowchart summary of what we learned:
 # Ghidra Scripting
 
 There comes a day in the life of every reverse engineer when they wish they could automate something. Luckily, you can. In Ghidra, you automate things by writing Ghidra scripts. We recommend that you write them in Java, because Ghidra Scripting integrates with the Eclipse IDE. Having an IDE is so much better than not having an IDE, especially when you are facing a true blood Java API. It gives you auto-completion and inline documentation. Look, this is no time for false pride. Just use Java.
+
+## Discovering the API
+
+You will find it easy to automate your reverse engineering tasks if you know exactly what Ghidra scripting API you have to call. Hence, the greatest difficulty is usually figuring out where that API is and how to use it. There are three main ways to do so:
+
+- In your Ghidra application directory, locate the folder `docs`. Within it, you should find a rather large ZIP archive containing the entire API documentation.
+- Since you already agreed to use Java and the Eclipse, you will be able to _discover_ the API from within the IDE: Method auto-completion and code exploration can help you a lot to figure out how something works.
+- If all else fails, search the Intertubes and post questions on the official [Ghidra Github issue tracker][Ghidra-Issues].
+
+A user-defined Ghidra script is a Java class extending the `GhidraScript` class. This parent class implements the so-called _flat API_, which is a set of useful shortcuts to do common Ghidra scripting tasks. Simply typing `this.` followed by <kbd>Ctrl</kbd>+<kbd>Tab</kbd> will show you a list of methods that you can call and member variables that you can use.
+
+
+
+
 
 For this section, recall the sample with SHA-256 hash
 ```
@@ -1052,7 +1066,7 @@ dumping irgendwann einfach attachen
 
 
 
-
+[Ghidra-Issues]: https://github.com/NationalSecurityAgency/ghidra/issues
 [IDA]: https://www.hex-rays.com/products/ida/
 [HexRays Decompiler]: https://www.hex-rays.com/products/decompiler/
 [Hopper]: https://www.hopperapp.com/
