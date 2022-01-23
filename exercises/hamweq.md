@@ -18,6 +18,7 @@ script:
      want to turn a `long` value into an `Address`, the Flat API exposes [toAddr][].
 2. Extend your script to convert the memory contents into a string literal after successfully
    decrypting it.
+   - Ghidra is very reluctant to make any changes to the listing unless you call [clearListing][].
    - The Ghidra `Listing` interface represents the disassembly & memory view. It is responsible for
      assigning data types to memory contents. You can access this API by calling the [getListing][]
      method of the [currentProgram][] variable.
@@ -41,3 +42,4 @@ script:
 [getValue]: https://mal.re/api/ghidra/program/model/listing/Data.html#getValue()
 [subtract]: https://mal.re/api/ghidra/program/model/address/Address.html#subtract(long)
 [toAddr]: https://mal.re/api/ghidra/program/flatapi/FlatProgramAPI.html#toAddr(long)
+[clearListing]: https://mal.re/api/ghidra/program/flatapi/FlatProgramAPI.html#clearListing(ghidra.program.model.address.Address,ghidra.program.model.address.Address)
