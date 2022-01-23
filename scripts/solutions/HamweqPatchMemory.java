@@ -1,4 +1,4 @@
-//Inverts XOR-based string obfuscation technique observed in Hamweq (0x5f + invert)
+//Inverts XOR-based string obfuscation technique observed in Hamweq (0x5f + invert, solution to hamweq exercise)
 //@author malRE
 //@category malRE
 //@keybinding
@@ -52,8 +52,7 @@ public class HamweqPatchMemory extends GhidraScript {
 			size += 1;
 		}
 
-		DataType dataType = new ArrayDataType(CharDataType.dataType, size, 1);
 		clearListing(start, start.add(size));
-		createData(start, dataType);
+		createAsciiString(start, size);
 	}
 }
