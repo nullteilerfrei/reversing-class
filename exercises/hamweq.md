@@ -19,16 +19,10 @@ script:
 2. Extend your script to convert the memory contents into a string literal after successfully
    decrypting it.
    - Ghidra is very reluctant to make any changes to the listing unless you call [clearListing][].
-   - The Ghidra `Listing` interface represents the disassembly & memory view. It is responsible for
-     assigning data types to memory contents. You can access this API by calling the [getListing][]
-     method of the [currentProgram][] variable.
-   - In Ghidra language, the data type of a memory region is modified by calling the [createData][]
-     method of the `Listing` interface.
-   - The Flat API implements several shortcuts to interact with the listing; you should be able to
-     write this script without having to call [getListing][].
+   - There is a function in the Flat API that converts memory to an ASCII string constant.
 3. Re-write your script so that it decrypts all of the malware's strings.
-   - Just as we used [createData][] to set the data type of a memory region, you can use the Flat
-     API method [getDataAt][] to get the data at a given address including type information.
+   - You can use the Flat API method [getDataAt][] to get the data at a given address including
+     type information.
    - If a `Data` interface represents a pointer, the return value of [getValue][] will be of type
      `Address`.
 
