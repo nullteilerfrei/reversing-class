@@ -27,7 +27,7 @@ Hints:
   ```
   Java.Default.Crypto.Factories.Ciphers.Stream.Legacy.ARC4
   ```
-  we include a self-contained implemenation in the template, you can use it like so:
+  we include a self-contained implementation in the template, you can use it like so:
   ```
   new RC4(key).decrypt(data)
   ```
