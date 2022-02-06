@@ -661,53 +661,6 @@ Now to business. First, open the **Script Manager** view from the **Window** men
 
 You will write a class that inherits from `GhidraScript` and this gives you access to the methods of that class, which are referred to as the _"flat API"_. Those are quite useful because they remove a lot of otherwise necessary boilerplate code.
 
-### Reading & Patching Bytes
-
-Projects:
-- literally: patch bytes script & undo patch bytes
-- nop this shit
-- string deobfuscation by hotkey (*)
-
-### Working With Functions
-
-Todo:
-- Listing Functions
-- Getting Function Arguments
-
-Projects:
-- list all functions with number of calls within current function
-- list all functions with number of calls within program
-- deobfuscate all strings based on string deobfuscation function
-
-### Misc
-
-Todo:
-- reading register values
-- function signature modification
-- creating new data types (and enums)
-- external process invocation
-
-Projects:
-- google selection
-- deobfuscate stack strings
-- yara scanner
-- use binary refinery
-- Dhrake
-- API hashing enums
-- REvil: API hash struct
-
-### User Interfaces
-
-Summarize what was previously shown in examples:
-
-- println
-- monitor
-- askBytes, askInt, ...
-- hexDump
-- comments & bookmarks
-- real UIs (motivational example is missing)
-
-
 ## Finding All Calls
 
 Now, let's get this show on the road for real, though. We will need a reference to the deobfuscation function:
@@ -742,7 +695,7 @@ The variable `callAddr` should now contain the address where the deobfuscation f
 Since we have a decompiler, this information is available in principle. Internally, Ghidra uses an intermediate language referred to as _pcode_, which is a simple assembly language. The pcode variable which is passed as the argument to the function call is easily determined, but we then have to trace its value back to the actual constant. Let's look at some code first and then explain this a bit more:
 ```java
 private OptionalLong getConstantCallArgument(Address addr, int index)
-        throws IllegalStateException, UnknownVariableCopy
+        throws Exception
 {
     Function caller = getFunctionBefore(addr);
     if (caller == null)
@@ -767,7 +720,7 @@ private OptionalLong getConstantCallArgument(Address addr, int index)
 ```
 Here, we iterate the pcode instructions that correspond to the function call until we find the pcode equivalent of the call. Then, we use the following function to attempt to trace the argument back to a constant value:
 ```java
-private OptionalLong traceVarnodeValue(Varnode argument) throws UnknownVariableCopy {
+private OptionalLong traceVarnodeValue(Varnode argument) throws Exception {
     while (!argument.isConstant()) {
         PcodeOp ins = argument.getDef();
         switch (ins.getOpcode()) {
@@ -785,7 +738,11 @@ private OptionalLong traceVarnodeValue(Varnode argument) throws UnknownVariableC
             return OptionalLong.empty();
         default:
             // don't know how to handle this yet.
-            throw new UnknownVariableCopy(ins, argument.getAddress());
+            throw new Exception(String.format("unknown opcode %s for variable copy at %08X", 
+                ins.getMnemonic(), 
+                argument.getAddress().getOffset()
+            ));
+            
         }
     }
     return OptionalLong.of(argument.getOffset());
@@ -808,7 +765,26 @@ int size = (int) a2Option.getAsLong();
 
 byte[] buffer = getOriginalBytes(toAddr(offset), size);
 ```
-Unfortunately, the method `getOriginalBytes` is _not_ a part of the flat API, but the good news is that you can copy and paste it from [the source code][DownRageStrings]. It reads `size` many bytes from the given address as they appear in the original, unpatched binary. Assuming you have implemented a method `deobfuscateString`, the rest is easy:
+Unfortunately, the method `getOriginalBytes` is _not_ a part of the flat API, but here it is:
+```java
+protected byte[] getOriginalBytes(Address addr, int size) {
+    MemoryBlock stringMemoryBlock = currentProgram.getMemory().getBlock(addr);
+    if (stringMemoryBlock == null)
+        return null;
+    FileBytes fileBytes = currentProgram.getMemory().getAllFileBytes().get(0);
+    MemoryBlockSourceInfo memoryInformation = stringMemoryBlock.getSourceInfos().get(0);
+    long fileOffset = addr.getOffset() - memoryInformation.getMinAddress().getOffset()
+        + memoryInformation.getFileBytesOffset();
+    try {
+        byte[] result = new byte[size];
+        fileBytes.getOriginalBytes(fileOffset, result);
+        return result;
+    } catch (IOException X) {
+        return null;
+    }
+}
+```
+It reads `size` many bytes from the given address as they appear in the original, unpatched binary. Assuming you have implemented a method `deobfuscateString`, the rest is easy:
 ```java
 Address stringAddr = toAddr(offset);
 deobfuscateString(buffer);
@@ -818,6 +794,19 @@ createData(stringAddr, new ArrayDataType(CharDataType.dataType, size, 1));
 createBookmark(stringAddr, "DeobfuscatedString", new String(buffer));
 ```
 The last three flat API calls remove all data type definitions from the memory range where the deobfuscated string has been written, and then we define a `char` array of the correct length in that spot. Finally, a bookmark is added to have a convenient overview of all deobfuscated strings.
+
+## Setting Comments
+
+Sometimes, the only (or just a quick & dirty) way to add information to your project is by creating comment strings. For example, you might be able to programmatically deobfuscate certain strings, but there is no reasonable way to make them show up as actual string literals in the decompiled code. Here's how to make comments at a certain address and have them show up in both the listing view (disassembler) and the decompiler:
+```java
+private void setComment(Address address, String comment) {
+		CodeUnit codeUnit = currentProgram.getListing().getCodeUnitAt(address);
+		codeUnit.setComment(CodeUnit.PLATE_COMMENT, comment);
+		codeUnit.setComment(CodeUnit.PRE_COMMENT, comment);
+}
+```
+
+
 
 # YARA
 > TODO: YARA Interlude
