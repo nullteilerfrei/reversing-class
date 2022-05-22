@@ -305,6 +305,21 @@ rule dinkumware
         all of them
 }
 
+rule c_rand_01
+{
+    meta:
+        description = "Constants from LCG"
+        author = "@larsborn"
+        date = "2021-10-31"
+        reference = "https://stackoverflow.com/questions/1026327/what-common-algorithms-are-used-for-cs-rand"
+        hash = "d7579872700a4b4ec8fb13bc76c80548cc1d10af538aed9e5b9501e48d3137d7"
+    strings:
+        $ = { fd 43 03 00 }
+        $ = { c3 9e 26 00 }
+    condition:
+        all of them
+}
+
 rule lz4
 {
     meta:
@@ -324,6 +339,24 @@ rule lz4
             c7 44 ?? ?? 01 00 00 00
         }
 
+	condition:
+		all of them
+}
+
+rule sha1
+{
+    meta:
+        description = "Constants used in the SHA1 algorithm"
+        author = "@larsborn"
+        date = "2022-05-08"
+        reference = "https://gist.github.com/dchiji/271182/70302b2de500e08e2e3a6f087d671b99a93c9154"
+        hash = "0fe796e1b7db725115a7de7ee8a56540f838305356b5de2f24de0883300e2c23"
+    strings:
+        $ = { 01 23 45 67 }
+        $ = { 89 AB CD EF }
+        $ = { FE DC BA 98 }
+        $ = { 76 54 32 10 }
+        $ = { F0 E1 D2 C3 }
 	condition:
 		all of them
 }
