@@ -1,5 +1,5 @@
 ---
-tags: bottom-up, rat, string-obfuscation
+tags: bottom-up, rat, string-obfuscation, scale-yourself, automation
 ---
 Consider the sample with the following SHA-256 hash:
 ```
@@ -11,7 +11,7 @@ Your first task is to write a script that can help you locate the string deobfus
    sorted by the number of times that they are referenced in the code. You will likely have to
    use the [getFunctions][] method of the current function manager.
    Going from most referenced to least referenced, the third function in this list is the one
-   we are looking for. 
+   we are looking for.
 2. Write a second script that you can use to deobfuscate strings by pressing a hotkey. Remember
    that [createAsciiString][] can be used to convert a memory range to an ASCII string.
 3. (**Bonus**) Extend your script to deobfuscate all constant strings that are passed to the

@@ -1,5 +1,5 @@
 ---
-tags: string-obfuscation, automation
+tags: string-obfuscation, scale-yourself, automation
 ---
 Consider the sample with the following SHA-256 hash:
 ```
@@ -11,7 +11,7 @@ script:
 
 1. Write a script to decrypt the currently selected memory contents with the key from this sample.
    - Note that the [Flat API](https://mal.re/api/ghidra/app/script/GhidraScript.html) has methods
-     to get and set the value of a byte in memory. 
+     to get and set the value of a byte in memory.
    - To get the currently selected bytes, look for the right Ghidra Script State variable in the
      Flat API documentation.
    - The `Address` interface has the useful methods [getOffset][], [add][], [subtract][]. If you

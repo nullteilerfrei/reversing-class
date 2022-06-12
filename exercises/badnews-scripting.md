@@ -1,5 +1,5 @@
 ---
-tags: automation, string-obfuscation, stack-strings
+tags: automation, string-obfuscation, stack-strings, scale-yourself, automation
 ---
 Consider the sample with the following SHA-256 hash:
 ```

@@ -1,5 +1,5 @@
 ---
-tags: zlob, des, encryption, algorithm-identification
+tags: zlob, des, encryption, algorithm-identification, scale-yourself, automation
 ---
 Consider the sample with the following SHA-256 hash:
 ```
