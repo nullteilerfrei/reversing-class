@@ -23,9 +23,8 @@ These correspond to the following assembly instructions:
 10003e78 8b 3d c4 80 00 10    MOV      EDI, dword ptr [->GetConsoleCP]
 10003e7e ff d7                CALL     EDI
 ```
-We want to replace all of these assembly instructions by NOPs (byte value `0x90`) so
-that the decompiler no longer displays the irrelevant API calls. To do so, proceed in
-two steps:
+We want to replace all of these assembly instructions by NOPs (byte value `0x90`) so that the
+decompiler no longer displays the irrelevant API calls. To do so, proceed in two steps:
 
 1. Write a script that can replace a selection in the listing view by NOP values. Remember that you
    will have to call [clearListing][] before using [setByte][]. After having written the NOP
