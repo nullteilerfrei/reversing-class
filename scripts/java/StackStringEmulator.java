@@ -15,8 +15,6 @@ import docking.widgets.OkDialog;
 
 public class StackStringEmulator extends GhidraScript {
 	public void run() throws Exception {
-		EmulatorHelper emuHelper = new EmulatorHelper(currentProgram);
-		emuHelper.enableMemoryWriteTracking(true);
 		if (currentSelection == null) {
 			OkDialog.show("StackStringEmulator", "Please select something");
 			return;
@@ -24,6 +22,8 @@ public class StackStringEmulator extends GhidraScript {
 		Instruction entryInstr = getInstructionAt(currentSelection.getMinAddress());
 		Instruction endInstr = getInstructionAt(currentSelection.getMaxAddress());
 
+		EmulatorHelper emuHelper = new EmulatorHelper(currentProgram);
+		emuHelper.enableMemoryWriteTracking(true);
 		emuHelper.setBreakpoint(endInstr.getNext().getAddress());
 		emuHelper.run(currentSelection.getMinAddress(), entryInstr, monitor);
 
