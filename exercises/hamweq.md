@@ -11,8 +11,8 @@ script:
 
 1. Write a script to decrypt the currently selected memory contents with the key from this sample.
    - Note that the [Flat API](https://mal.re/api/ghidra/app/script/GhidraScript.html) has methods
-     to get and set the value of a byte in memory.
-   - To get the currently selected bytes, look for the right Ghidra Script State variable in the
+     to get and set the value of a byte in memory. 
+   - To get the currently selected bytes, look for the right `GhidraScript` class variable in the
      Flat API documentation.
    - The `Address` interface has the useful methods [getOffset][], [add][], [subtract][]. If you
      want to turn a `long` value into an `Address`, the Flat API exposes [toAddr][].
