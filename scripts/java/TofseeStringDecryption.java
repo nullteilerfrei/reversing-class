@@ -71,10 +71,11 @@ public class TofseeStringDecryption extends GhidraScript {
 			byte keyAdd = (byte) options[3].getAsLong();
 
 			byte[] buffer = decrypt(getOriginalBytes(bufferAddr, bufferLength), xorKey, keyAdd);
-			String deobfuscated = new String(buffer, StandardCharsets.UTF_8);
-			println(String.format("0x%08X : data 0x%08X (len=%d), xor=%02x, add=%02x, \"%s\"", callAddr.getOffset(),
-					bufferAddr.getOffset(), bufferLength, xorKey, keyAdd, deobfuscated));
+			println(String.format("0x%08X : data 0x%08X (len=%d), xor=%02x, add=%02x", callAddr.getOffset(),
+					bufferAddr.getOffset(), bufferLength, xorKey, keyAdd));
+			hexdump(buffer);
 
+			String deobfuscated = new String(buffer, StandardCharsets.UTF_8).replace("\0", "");
 			setComment(callAddr, String.format("Deobfuscated: %s", deobfuscated));
 			createBookmark(callAddr, "DeobfuscatedString", deobfuscated);
 		}
@@ -83,7 +84,10 @@ public class TofseeStringDecryption extends GhidraScript {
 	private byte[] decrypt(byte[] buffer, byte xorKey, byte keyAdd) {
 		byte[] result = new byte[buffer.length];
 		for (int i = 0; i < buffer.length; i++) {
-			result[i] = (byte) (buffer[i] ^ xorKey);
+			byte current = (byte) (buffer[i] ^ xorKey);
+			if (current != 0) {
+				result[i] = current;
+			}
 			xorKey += (i % 2 == 1 ? -1 : 1) + keyAdd;
 		}
 		return result;
@@ -187,5 +191,43 @@ public class TofseeStringDecryption extends GhidraScript {
 
 	private void setCommentToDecompiledCode(Address address, String comment) {
 		currentProgram.getListing().getCodeUnitAt(address).setComment(CodeUnit.PRE_COMMENT, comment);
+	}
+
+	private boolean isPrintable(byte c) {
+		return !(c < 0x20 || c > 127);
+	}
+
+	private void hexdump(byte[] data) {
+		int lineWidth = 16;
+		for (int i = 0; i < Math.ceil((double) data.length / lineWidth); i++) {
+			int offset = i * lineWidth;
+			// address
+			print(String.format("%08x  ", offset));
+
+			// actual hex dump
+			for (int j = 0; j < lineWidth; j++) {
+				if (lineWidth / 2 == j) {
+					print(" ");
+				}
+				if (offset + j < data.length) {
+					print(String.format("%02x ", data[offset + j]));
+				} else {
+					print("   ");
+				}
+			}
+
+			// printable
+			print(" |");
+			for (int j = 0; j < lineWidth; j++) {
+				if (offset + j < data.length) {
+					if (isPrintable(data[offset + j])) {
+						print(String.format("%c", data[offset + j]));
+					} else {
+						print(".");
+					}
+				}
+			}
+			print("|\n");
+		}
 	}
 }
