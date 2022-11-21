@@ -15,19 +15,19 @@ import java.util.OptionalLong;
 import ghidra.app.decompiler.DecompInterface;
 import ghidra.app.decompiler.DecompileResults;
 import ghidra.app.script.GhidraScript;
-import ghidra.program.model.mem.*;
-import ghidra.program.model.lang.*;
-import ghidra.program.model.pcode.*;
-import ghidra.program.model.util.*;
 import ghidra.util.exception.CancelledException;
-import ghidra.program.model.reloc.*;
-import ghidra.program.model.data.*;
-import ghidra.program.model.block.*;
-import ghidra.program.model.symbol.*;
-import ghidra.program.model.scalar.*;
-import ghidra.program.model.listing.*;
 import ghidra.program.database.mem.FileBytes;
-import ghidra.program.model.address.*;
+import ghidra.program.model.address.Address;
+import ghidra.program.model.listing.CodeUnit;
+import ghidra.program.model.listing.Function;
+import ghidra.program.model.mem.MemoryBlock;
+import ghidra.program.model.mem.MemoryBlockSourceInfo;
+import ghidra.program.model.pcode.HighFunction;
+import ghidra.program.model.pcode.PcodeOp;
+import ghidra.program.model.pcode.PcodeOpAST;
+import ghidra.program.model.pcode.Varnode;
+import ghidra.program.model.symbol.RefType;
+import ghidra.program.model.symbol.Reference;
 
 public class TofseeStringDecryption extends GhidraScript {
 
@@ -40,11 +40,24 @@ public class TofseeStringDecryption extends GhidraScript {
 			return;
 		}
 		Function deobfuscator = getGlobalFunctions(deobfuscatorName).get(0);
+		if (deobfuscator == null) {
+			println("Deobfuscation function not found");
+			return;
+		}
 		OUTER_LOOP: for (Address callAddr : getCallAddresses(deobfuscator)) {
 			monitor.setMessage(String.format("parsing call at %08X", callAddr.getOffset()));
 
 			int arguments[] = { 2, 3, 4, 5 };
-			OptionalLong options[] = getConstantCallArgument(callAddr, arguments);
+			OptionalLong options[];
+			try {
+				options = getConstantCallArgument(callAddr, arguments);
+			} catch (IllegalStateException e) {
+				println(String.format("Cannot decompile call at %08X", callAddr.getOffset()));
+				continue;
+			} catch (UnknownVariableCopy e) {
+				println(String.format("Cannot decompile call at %08X: %s", callAddr.getOffset(), e.toString()));
+				continue;
+			}
 			for (OptionalLong option : options) {
 				if (option.isEmpty()) {
 					println(String.format("Argument to call at %08X is not a constant string.", callAddr.getOffset()));
