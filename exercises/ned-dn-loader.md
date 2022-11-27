@@ -11,7 +11,7 @@ following:
 rundll32.exe desktop.dat, BZ2_bzZip S-2-20-8798-18246938-238138-0443 0 0 8000 1
 ```
 Identify the algorithms implemented by the following functions:
-1. `FUN_180005b40`: Further analysis will suggest that one of the above command line switch is
+1. `FUN_180005b40`: Further analysis will suggest that one of the above command line switchs is
    passed to this function resulting in `80a001178482591b63753ee04ccdf517`.
 2. `FUN_180002590`: It receives `80a001178482591b63753ee04ccdf517` as an argument as well as the
    buffer of length `0x340` located at `0x180026994`.
