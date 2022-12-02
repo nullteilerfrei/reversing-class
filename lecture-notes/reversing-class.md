@@ -134,7 +134,7 @@ For example, the function at offset `0x14000168c` contains a call to `GetVolumeI
 14000172c       TEST          dword ptr [RBP + lpFileSystemFlags[0]], 0x80000
 140001736       JZ            LAB_14000173f
 ```
-In this case, we right-click the value `0x80000` and search for `FILE`. Then, we guess that it is probably the flag called `FILE_READ_ONLY_VOLUME`.
+In this case, we right-click the value `0x80000`, click on `Set Equate...`, and search for `FILE`. Then, we guess that it is probably the flag called `FILE_READ_ONLY_VOLUME`.
 
 ## Using Comments
 
