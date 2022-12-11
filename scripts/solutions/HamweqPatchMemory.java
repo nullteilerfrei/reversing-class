@@ -18,7 +18,7 @@ public class HamweqPatchMemory extends GhidraScript {
 
 	public void run() throws Exception {
 		for (AddressRange addressRange : currentSelection.getAddressRanges()) {
-			decryptRange(addressRange.getMinAddress());
+			decryptAt(addressRange.getMinAddress());
 		}
 	}
 
@@ -33,13 +33,13 @@ public class HamweqPatchMemory extends GhidraScript {
 			if (dataAddr.getOffset() == 0) {
 				break;
 			}
-			decryptRange(dataAddr);
+			decryptAt(dataAddr);
 			cursor = cursor.add(currentProgram.getDefaultPointerSize());
 			println(String.format("0x%x", cursor.getOffset()));
 		}
 	}
 
-	private void decryptRange(Address start) throws Exception {
+	private void decryptAt(Address start) throws Exception {
 		Address current = start;
 		int size = 0;
 		while (true) {
