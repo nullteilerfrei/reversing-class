@@ -26,7 +26,7 @@ Furthermore, the binaries analyzed during the course will usually have been comp
 
 ## Alternatives to Ghidra
 
-The industry standard for binary reverse engineering is [IDA][], using the [HexRays Decompiler][]. However, these are not exactly cheap. Before the release of the Ghidra, the only alternatives were [RetDec][] and [Hopper][], but both of these are arguably less powerfull than Ghidra and IDA. Given these considerations, we consider Ghidra the best choice for entry level reverse engineering.
+The industry standard for binary reverse engineering is [IDA][], using the [HexRays Decompiler][]. However, these are not exactly cheap. Before the release of the Ghidra, the only alternatives were [RetDec][] and [Hopper][], but both of these are arguably less powerful than Ghidra and IDA. Given these considerations, we consider Ghidra the best choice for entry level reverse engineering.
 
 ## Motivations for Reverse Engineering
 
@@ -44,7 +44,7 @@ We are not lawyers, but we believe the above list to roughly be sorted by how ne
 
 ## Types of Malware
 
-Classifying malware is a desaster. Here is our miserable attempt:
+Classifying malware is a disaster. Here is our miserable attempt:
 
 ### Stagers
 
@@ -123,7 +123,7 @@ For example, as we proceed to investigate the purpose of the next function `BCry
 
 ## Changing Types
 
-Furthermore, the decompiler sometimes does not guess the correct type for a variable or openly admits that it has no idea, in which case Ghidra will denote the type as `undefined`. Sometimes, Ghidra will indicate the size of the variable in bytes, i.e. `undefined4`. See also the entry **Ghidra Functionality → Program Annotation → Data → Data Types** in the Ghidra manual. Especially function signatures are often incomplete and sometimes wrong, in which case you can (and should) fix them. Unfortunately, there is no foolproof receipe for figuring out the correct types. Usually, you formulate hypotheses about the context in which variables and functions are used, then change types according to these hypotheses, and keep challenging until they break down and you have to start all over again - or you get lucky and it all makes sense.
+Furthermore, the decompiler sometimes does not guess the correct type for a variable or openly admits that it has no idea, in which case Ghidra will denote the type as `undefined`. Sometimes, Ghidra will indicate the size of the variable in bytes, i.e. `undefined4`. See also the entry **Ghidra Functionality → Program Annotation → Data → Data Types** in the Ghidra manual. Especially function signatures are often incomplete and sometimes wrong, in which case you can (and should) fix them. Unfortunately, there is no foolproof recipe for figuring out the correct types. Usually, you formulate hypotheses about the context in which variables and functions are used, then change types according to these hypotheses, and keep challenging until they break down and you have to start all over again - or you get lucky and it all makes sense.
 
 ## Naming Constants
 
@@ -326,7 +326,7 @@ It is your exercise to extract the shellcode second stage of this loader.
 
 ## Runtime API Lookups
 
-Instead of listing required API functions as an imported symbol, the malware can use the `LoadLibrary` and `GetProcAddress` API calls to load DLLs into memory and retrieve the addresses of required functions at runtime. The malware may even go one step further and implement a variant of `GetProcAddress` which uses hashes instead of function names; this is referred to as _API hashing_. Finally, the malware may even go _another step futher_ and avoid using `LoadLibrary` and `GetProcAddress` by parsing the PE header of DLLs which are already present in memory. In practice, the following observation helps to identify when shenanigans like this are taking place. If the variable `ptr` points to the beginning of a DLL, then
+Instead of listing required API functions as an imported symbol, the malware can use the `LoadLibrary` and `GetProcAddress` API calls to load DLLs into memory and retrieve the addresses of required functions at runtime. The malware may even go one step further and implement a variant of `GetProcAddress` which uses hashes instead of function names; this is referred to as _API hashing_. Finally, the malware may even go _another step further_ and avoid using `LoadLibrary` and `GetProcAddress` by parsing the PE header of DLLs which are already present in memory. In practice, the following observation helps to identify when shenanigans like this are taking place. If the variable `ptr` points to the beginning of a DLL, then
 ```
 (ptr + *(int *)(ptr + *(int *)(ptr + 0x3c) + 0x78))
 ```
@@ -415,7 +415,7 @@ if ((int)s < 1) {
 ```
 Notice that there is an array access to the memory at `0x0040b030`, but the index variable is multiplied by two. This indicates that the array actually contains chunks of data where each chunk consists of two machine-word-sized variables, i.e. it is an array of structs. Let's create a structure in Ghidra that has two machine-word-sized fields. To do so, go to **Data Type Manager**, right-click the entry that corresponds to the open sample, **New**, **Structure**. If you are using our keyboard shortcuts, you can also create a new structure by simply pressing the **Insert** key while the **Data Type Manager** has focus.
 
-This should open the **Structure Editor** for a new structure. Add two fields to it, change the name to, say, `c2_t`, and save the structure. After this is done, navigate to `0x0040b030` and change the type of the global variable at this location to, say `c2_t[2]`; we can figure out the correct size of the array later. Beware of Ghidra's data type chooser, which often tries to aggressively suggest false data types. After changing the data type, the code should look more like this:
+This should open the **Structure Editor** for a new structure. Add two fields to it, change the name to, say, `c2_t`, and save the structure. After this is done, navigate to `0x0040b030` and change the type of the global variable at this location to, say `c2_t[1]`; we can figure out the correct size of the array later. Beware of Ghidra's data type chooser, which often tries to aggressively suggest false data types. After changing the data type, the code should look more like this:
 ```c++
 if (DAT_0040b030[local_8].field_0x0 == 0) {
   local_8 = 0;
