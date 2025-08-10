@@ -266,7 +266,7 @@ by using a bottom-up approach starting at calls to `InternetConnectA`.
 
 ## Stack Strings
 
-Independent of the above, strings can be obfuscated by simply not storing them as a consecutive buffer of bytes. Instead, the string is constructed by a sequence of machine code instructions. The first known implementation of this technique was to assemble strings on the _stack_, which is a datastructure present on many architectures. For this reason, this method is referred to as _stack strings_. They can often be spotted in Ghidra as many consecutive single byte value assignments:
+Independent of the above, strings can be obfuscated by simply not storing them as a consecutive buffer of bytes. Instead, the string is constructed by a sequence of machine code instructions. The first known implementation of this technique was to assemble strings on the _stack_, which is a data structure present on many architectures. For this reason, this method is referred to as _stack strings_. They might appear in the decompiler as many consecutive single byte value assignments:
 ```
   local_78 = 0x56;
   local_77 = 0x69;
@@ -298,7 +298,12 @@ To turn these byte values into readable letters, switch to the **Listing** windo
   00000038       MOV           byte ptr [EBP + local_6d], 0x63
   0000003c       MOV           byte ptr [EBP + local_6c], 0x0
 ```
-Then, place your cursor over the first byte value `0x56` and use the option **Convert → Char** from the context menu. Remember the shortcut (which should really be `R` if you imported [our delicious keybindings](../ghIDA.kbxml)). Now, repeatedly press the down arrow key followed by that shortcut. That's your life now.
+Notably, however, since version 11.2, Ghidra supports automatic recovery of stack strings.
+The above code would now be rendered like so in the decompiler:
+```c
+builtin_strncpy(s_VirtualAlloc,"VirtualAlloc",0xd);
+```
+If this automatic recovery fails, place your cursor over the first byte value `0x56` and use the option **Convert → Char** from the context menu. Remember the shortcut (which should really be `R` if you imported [our delicious keybindings](../ghIDA.kbxml)). Now, repeatedly press the down arrow key followed by that shortcut. Or file a bug report, your choice.
 
 ## Packing
 
