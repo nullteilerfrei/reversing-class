@@ -476,7 +476,7 @@ if ("- unzip 0.15 Copyright 1998 Gilles Vollant "[1] == ' ') {
 ```
 then you are probably looking at unzip code. However, this is not always the case, and identifying the algorithm in question can be a massive road block in your analysis.
 
-The first step is to realize that you are looking at a cryptographic or compression algorithm at all. Needless to say, there is no magic receipe, but a few dead giveaways anyway. For example, horrendous amounts of arithmetic operations (especially shifts and XOR) should tip you off. Another clue are oddly specific looking, large numeric constants. The following code has both:
+The first step is to realize that you are looking at a cryptographic or compression algorithm at all. Needless to say, there is no magic recipe, but a few dead giveaways anyway. For example, horrendous amounts of arithmetic operations (especially shifts, XOR, and rotations) should tip you off. Another clue are oddly specific looking, large numeric constants. The following code has both:
 ```c++
 uVar1 = iVar2 + 0xd76aa478 + (~uVar9 & uVar2 | uVar12 & uVar9) + local_50;
 uVar3 = (uVar1 >> 0x19 | uVar1 * 0x80) + uVar9;
@@ -596,13 +596,14 @@ Every now and then, you may come across an algorithm that is not covered by what
 
 1. Reverse engineer the algorithm a little bit.
 2. Formulate an aspect of the algorithm as it might occur in a paper or reference implementation.
-3. Search the internet for various possible formulations. At the time of writing, one option is also to study the [list of stream ciphers][StreamCiphers] and the [known compression algorithms][CompressionAlgorithms] on WikiPedia and search for anything that sounds familiar.
+3. Search the internet for various possible formulations. At the time of writing, one option is also to study the [list of stream ciphers][StreamCiphers] and the [known compression algorithms][CompressionAlgorithms] on WikiPedia and search for anything that sounds familiar. Another good resource is [grep.app][grepapp].
 4. If you have not succeeded, go back to step 1 or 2.
 
 In order to be efficient during this process, it is important to scope and perpetually scale your efforts in the first step. We recommend the following escalation protocol:
 
 1. Identify remarkable integer constants.
 2. Identify remarkable sequences of arithmetic operations (shifts, rotations, modulo, and/or/not/xor, etc).
+   Pay specific attention to rotation patterns which are not all, say, multiples of 4.
 3. Start reverse engineering the first steps of the algorithm until have identified what could be construed as a step in an algorithm.
 4. Do step 3 a few more times (also, do step 1 and 2 a few more times).
 5. Reverse engineer the whole thing.
@@ -1075,6 +1076,7 @@ dumping irgendwann einfach attachen
 [SEAL3]: https://web.cs.ucdavis.edu/~rogaway/papers/seal.pdf
 [HC128]: https://www.ecrypt.eu.org/stream/e2-hc128.html
 [SALSA20]: https://cr.yp.to/snuffle.html
+[grepapp]: https://grep.app/
 [Process Hacker]: https://processhacker.sourceforge.io/
 [Sysinternals Suite]: https://docs.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite
 [Wireshark]: https://www.wireshark.org/
